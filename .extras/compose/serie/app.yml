@@ -34,10 +34,10 @@ db:
   host: postgres
   #host: mysql
 
-  #username: buch
+  #username: serie
   #password: p
   #passwordAdmin: p
-  #name: buch
+  #name: serie
   populate: true
 
 # ==============================================================================

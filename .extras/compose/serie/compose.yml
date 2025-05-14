@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 # Aufruf:   docker compose up
-#           docker compose exec buch bash   # "ash" bei Alpine
+#           docker compose exec serie bash   # "ash" bei Alpine
 #             id
 #             env
 #             pwd
@@ -41,9 +41,9 @@ include:
 
 # https://docs.docker.com/compose/compose-file/05-services
 services:
-  buch:
-    image: juergenzimmermann/buch:2025.4.1-bookworm
-    #image: juergenzimmermann/buch:2025.4.1-alpine
+  serie:
+    image: juergenzimmermann/serie:2025.4.1-bookworm
+    #image: juergenzimmermann/serie:2025.4.1-alpine
     depends_on:
       db:
         condition: service_healthy
@@ -64,11 +64,11 @@ services:
         target: /opt/app/dist/config/resources/tls/key.pem
         read_only: true
       - type: bind
-        source: ../../../src/config/resources/sqlite/buch.sqlite
-        target: /opt/app/dist/config/resources/sqlite/buch.sqlite
+        source: ../../../src/config/resources/sqlite/serie.sqlite
+        target: /opt/app/dist/config/resources/sqlite/serie.sqlite
     networks: [acme-network]
     env_file: .env
-    #hostname: buch
+    #hostname: serie
     cap_drop: [ALL]
     deploy:
       resources:
