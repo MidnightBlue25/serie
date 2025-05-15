@@ -18,7 +18,10 @@ import { type GraphQLRequest } from '@apollo/server';
 import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
 import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
-import { type Serie, type SerieArt } from '../../src/serie/entity/serie.entity.js';
+import {
+    type Serie,
+    type SerieArt,
+} from '../../src/serie/entity/serie.entity.js';
 import { type GraphQLResponseBody } from '../graphql.js';
 import {
     host,

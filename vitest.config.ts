@@ -20,7 +20,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     test: {
         name: 'Beispiel',
-         // default ist ['**\/*.{test,spec}.?(c|m)[jt]s?(x)']
+        // default ist ['**\/*.{test,spec}.?(c|m)[jt]s?(x)']
         include: ['test/**/*.test.mts'],
         globals: true,
         environment: 'node',
@@ -39,4 +39,4 @@ export default defineConfig({
             // provider: 'istanbul',
         },
     },
-})
+});

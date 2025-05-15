@@ -8,7 +8,7 @@
   "extends": ["@tsconfig/node23/tsconfig"],
   "ts-node": {
     "esm": true,
-    "module": "es2024",
+    "module": "es2024"
     // "experimentalSpecifierResolution": "node"
     // "transpileOnly": true,
     // "files": true,
@@ -52,7 +52,7 @@
     "noUnusedParameters": true, // keine nicht-benutzen Parameter
     "preserveWatchOutput": true,
     "strict": true, // alle "strict"-Optionen aktivieren
-    "erasableSyntaxOnly": true, // NICHT: enum, parameter properties in constructor(), namespace, import aliases
+    "erasableSyntaxOnly": true // NICHT: enum, parameter properties in constructor(), namespace, import aliases
 
     // "noImplicitAny": true, // Fehler bei implizitem Typ "any", default bei strict
     // "noImplicitThis": true, // Fehler bei this mit implizitem "any", default bei strict

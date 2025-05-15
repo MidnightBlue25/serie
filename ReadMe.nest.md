@@ -105,7 +105,7 @@ zusätzlich die aktuelle Upload-Geschwindigkeit ermittelt werden.
 - Das Beispiel _nicht_ in einem Pfad mit _Leerzeichen_ installieren.
   Viele Javascript-Bibliotheken werden unter Linux entwickelt und dort benutzt
   man **keine** Leerzeichen in Pfaden. Ebenso würde ich das Beispiel nicht auf
-  dem  _Desktop_ auspacken bzw. installieren.
+  dem _Desktop_ auspacken bzw. installieren.
 
 - Bei [GitHub](https://github.com) oder [GitLab](https://gitlab.com)
   registrieren, falls man dort noch nicht registriert ist.
@@ -123,15 +123,15 @@ Wenn man ESM verwendet, muss man die eigenen Module z.B. folgendermaßen
 importieren:
 
 ```javascript
-    import { myFunc } from './foo.js';
-    import { myClass } from './bar/index.js';
+import { myFunc } from './foo.js';
+import { myClass } from './bar/index.js';
 ```
 
 Außerdem gibt es ab Node 17.1 das _Node Protocol_ für den Import von
 _Builtin Modules_, z.B.:
 
 ```javascript
-    import { resolve } from 'node:path';
+import { resolve } from 'node:path';
 ```
 
 Gute Literatur zu ESM gibt es bei:
@@ -475,7 +475,7 @@ validieren:
     docker build --tag juergenzimmermann/buch:2025.4.1-alpine --file Dockerfile.alpine .
 ```
 
-Mit Docker_Bake_:
+Mit Docker*Bake*:
 
 ```powershell
     # Debian als default
@@ -690,7 +690,7 @@ von _Scout_ auflisten:
 ```powershell
     docker scout cves juergenzimmermann/buch:2025.4.1-bookworm
     docker scout cves --format only-packages juergenzimmermann/buch:2025.4.1-bookworm
-````
+```
 
 Statt der Kommandozeile kann man auch den Menüpunkt "Docker Scout" im
 _Docker Dashboard_ verwenden.

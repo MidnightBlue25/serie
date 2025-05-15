@@ -166,7 +166,9 @@ export class SerieWriteService {
         );
         if (id === undefined) {
             this.#logger.debug('update: Keine gueltige ID');
-            throw new NotFoundException(`Es gibt keine Serie mit der ID ${id}.`);
+            throw new NotFoundException(
+                `Es gibt keine Serie mit der ID ${id}.`,
+            );
         }
 
         const validateResult = await this.#validateUpdate(serie, id, version);
