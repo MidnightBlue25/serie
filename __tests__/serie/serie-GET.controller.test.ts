@@ -61,7 +61,7 @@ describe('GET /rest', () => {
         await shutdownServer();
     });
 
-    test('Alle Buecher', async () => {
+    test('Alle Serien', async () => {
         // given
 
         // when
@@ -80,7 +80,7 @@ describe('GET /rest', () => {
             });
     });
 
-    test('Buecher mit einem Teil-Titel suchen', async () => {
+    test('Serien mit einem Teil-Titel suchen', async () => {
         // given
         const params = { titel: titelVorhanden };
 
@@ -103,7 +103,7 @@ describe('GET /rest', () => {
             );
     });
 
-    test('Buecher zu einem nicht vorhandenen Teil-Titel suchen', async () => {
+    test('Serien zu einem nicht vorhandenen Teil-Titel suchen', async () => {
         // given
         const params = { titel: titelNichtVorhanden };
 
@@ -122,7 +122,7 @@ describe('GET /rest', () => {
         expect(statusCode).toBe(HttpStatus.NOT_FOUND);
     });
 
-    test('Buecher mit Mindest-"rating" suchen', async () => {
+    test('Serien mit Mindest-"rating" suchen', async () => {
         // given
         const params = { rating: ratingMin };
 
@@ -143,7 +143,7 @@ describe('GET /rest', () => {
             );
     });
 
-    test('Buecher mit max. Preis suchen', async () => {
+    test('Serien mit max. Preis suchen', async () => {
         // given
         const params = { preis: preisMax };
 
@@ -188,7 +188,7 @@ describe('GET /rest', () => {
             );
     });
 
-    test('Keine Buecher zu einem nicht vorhandenen Schlagwort', async () => {
+    test('Keine Serien zu einem nicht vorhandenen Schlagwort', async () => {
         // given
         const params = { [schlagwortNichtVorhanden]: 'true' };
 
@@ -207,7 +207,7 @@ describe('GET /rest', () => {
         expect(statusCode).toBe(HttpStatus.NOT_FOUND);
     });
 
-    test('Keine Buecher zu einer nicht-vorhandenen Property', async () => {
+    test('Keine Serien zu einer nicht-vorhandenen Property', async () => {
         // given
         const params = { foo: 'bar' };
 

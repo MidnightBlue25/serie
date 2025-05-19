@@ -56,17 +56,3 @@ class BuchRequests(HttpUser):
         titel_list = ["a", "l", "t", "i", "p"]
         for teil in titel_list:
             self.client.get("/rest", params={"titel": teil})
-
-    @task(150)
-    def get_isbn(self) -> None:
-        """GET-Requests mit Query-Parameter: ISBN-Nummer."""
-        isbn_list: Final = [
-            "978-3-897-22583-1",
-            "978-3-827-31552-6",
-            "978-0-201-63361-0",
-            "978-0-007-09732-6",
-            "978-3-824-40481-0",
-            "978-3-540-43081-0",
-        ]
-        for isbn in isbn_list:
-            self.client.get("/rest", params={"isbn": isbn})

@@ -26,16 +26,15 @@ const token = inject('tokenRest');
 // -----------------------------------------------------------------------------
 // T e s t d a t e n
 // -----------------------------------------------------------------------------
-const geaenderteSerie: Omit<SerieDtoOhneRef, 'preis' | 'rabatt'> & {
+const geaenderteSerie: Omit<SerieDtoOhneRef, 'preis' | 'episode'> & {
     preis: number;
-    rabatt: number;
+    episode: number;
 } = {
-    isbn: '978-0-201-63361-0',
     rating: 5,
-    art: 'HARDCOVER',
+    art: 'STREAM',
     preis: 3333,
-    rabatt: 0.033,
-    lieferbar: true,
+    episode: 2,
+    trailer: true,
     datum: '2022-03-03',
     homepage: 'https://geaendert.put.rest',
     schlagwoerter: ['JAVA'],
@@ -44,17 +43,16 @@ const idVorhanden = '30';
 
 const geaenderteSerieIdNichtVorhanden: Omit<
     SerieDtoOhneRef,
-    'preis' | 'rabatt'
+    'preis' | 'episode'
 > & {
     preis: number;
-    rabatt: number;
+    episode: number;
 } = {
-    isbn: '978-0-007-09732-6',
     rating: 4,
-    art: 'EPUB',
+    art: 'TV',
     preis: 44.4,
-    rabatt: 0.044,
-    lieferbar: true,
+    episode: 5,
+    trailer: true,
     datum: '2022-02-04',
     homepage: 'https://acme.de',
     schlagwoerter: ['JAVASCRIPT'],
@@ -62,23 +60,21 @@ const geaenderteSerieIdNichtVorhanden: Omit<
 const idNichtVorhanden = '999999';
 
 const geaenderteSerieInvalid: Record<string, unknown> = {
-    isbn: 'falsche-ISBN',
-    rating: -1,
+    rating: 1,
     art: 'UNSICHTBAR',
-    preis: -1,
-    rabatt: 2,
-    lieferbar: true,
+    preis: 1,
+    episode: 2,
+    trailer: true,
     datum: '12345-123-123',
     homepage: 'anyHomepage',
 };
 
 const veralteSerie: SerieDtoOhneRef = {
-    isbn: '978-0-007-09732-6',
     rating: 1,
-    art: 'EPUB',
+    art: 'TV',
     preis: new Decimal(44.4),
-    rabatt: new Decimal(0.04),
-    lieferbar: true,
+    episode: 1,
+    trailer: true,
     datum: '2022-02-04',
     homepage: 'https://acme.de',
     schlagwoerter: ['JAVASCRIPT'],
@@ -145,11 +141,10 @@ describe('PUT /rest/:id', () => {
         headers.Authorization = `Bearer ${token}`;
         headers['If-Match'] = '"0"';
         const expectedMsg = [
-            expect.stringMatching(/^isbn /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^art /u),
             expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^rabatt /u),
+            expect.stringMatching(/^episode /u),
             expect.stringMatching(/^datum /u),
             expect.stringMatching(/^homepage /u),
         ];

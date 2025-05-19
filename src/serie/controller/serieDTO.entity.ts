@@ -26,7 +26,6 @@ import {
     ArrayUnique,
     IsArray,
     IsBoolean,
-    IsISBN,
     IsISO8601,
     IsInt,
     IsOptional,
@@ -42,7 +41,7 @@ import {
 } from 'class-validator';
 import Decimal from 'decimal.js'; // eslint-disable-line @typescript-eslint/naming-convention
 import { type SerieArt } from '../entity/serie.entity.js';
-import { AbbildungDTO } from './abbildungDTO.entity.js';
+import { CoverDTO } from './coverDTO.entity.js';
 import { TitelDTO } from './titelDTO.entity.js';
 
 export const MAX_RATING = 5;
@@ -105,20 +104,15 @@ class DecimalMax implements ValidatorConstraintInterface {
  * Entity-Klasse für Bücher ohne TypeORM und ohne Referenzen.
  */
 export class SerieDtoOhneRef {
-    // https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s13.html
-    @IsISBN(13)
-    @ApiProperty({ example: '978-0-007-00644-1', type: String })
-    readonly isbn!: string;
-
     @IsInt()
     @Min(0)
     @Max(MAX_RATING)
     @ApiProperty({ example: 5, type: Number })
     readonly rating!: number;
 
-    @Matches(/^(EPUB|HARDCOVER|PAPERBACK)$/u)
+    @Matches(/^(STREAM|TV|DVD)$/u)
     @IsOptional()
-    @ApiProperty({ example: 'EPUB', type: String })
+    @ApiProperty({ example: 'TV', type: String })
     readonly art: SerieArt | undefined;
 
     // https://github.com/typestack/class-transformer?tab=readme-ov-file#basic-usage
@@ -130,21 +124,15 @@ export class SerieDtoOhneRef {
     // Decimal aus decimal.js analog zu BigDecimal von Java
     readonly preis!: Decimal;
 
-    @Transform(number2Percent)
-    @Validate(DecimalMin, [Decimal(0)], {
-        message: 'rabatt muss positiv sein.',
-    })
-    @Validate(DecimalMax, [Decimal(1)], {
-        message: 'rabatt muss kleiner 1 sein.',
-    })
-    @IsOptional()
-    @ApiProperty({ example: 0.1, type: Number })
-    readonly rabatt: Decimal | undefined;
+    @IsInt()
+    @Min(0)
+    @ApiProperty({ example: 12, type: Number })
+    readonly episode!: number;
 
     @IsBoolean()
     @IsOptional()
     @ApiProperty({ example: true, type: Boolean })
-    readonly lieferbar: boolean | undefined;
+    readonly trailer: boolean | undefined;
 
     @IsISO8601({ strict: true })
     @IsOptional()
@@ -174,10 +162,10 @@ export class SerieDTO extends SerieDtoOhneRef {
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => AbbildungDTO)
-    @ApiProperty({ type: [AbbildungDTO] })
-    readonly abbildungen: AbbildungDTO[] | undefined;
+    @Type(() => CoverDTO)
+    @ApiProperty({ type: [CoverDTO] })
+    readonly covers: CoverDTO[] | undefined;
 
-    // AbbildungDTO
+    // CoverDTO
 }
 /* eslint-enable max-classes-per-file, @typescript-eslint/no-magic-numbers */

@@ -65,12 +65,11 @@ describe('GraphQL Mutations', () => {
                 mutation {
                     create(
                         input: {
-                            isbn: "978-1-491-95035-7",
                             rating: 1,
-                            art: EPUB,
+                            art: TV,
                             preis: 99.99,
-                            rabatt: 0.0123,
-                            lieferbar: true,
+                            episode: 3,
+                            trailer: true,
                             datum: "2022-02-28",
                             homepage: "https://create.mutation",
                             schlagwoerter: ["JAVASCRIPT", "TYPESCRIPT"],
@@ -78,7 +77,7 @@ describe('GraphQL Mutations', () => {
                                 titel: "Titelcreatemutation",
                                 untertitel: "untertitelcreatemutation"
                             },
-                            abbildungen: [{
+                            covers: [{
                                 beschriftung: "Abb. 1",
                                 contentType: "img/png"
                             }]
@@ -117,12 +116,11 @@ describe('GraphQL Mutations', () => {
                 mutation {
                     create(
                         input: {
-                            isbn: "falsche-ISBN",
-                            rating: -1,
-                            art: EPUB,
+                            rating: 1,
+                            art: TV,
                             preis: -1,
-                            rabatt: 2,
-                            lieferbar: false,
+                            episode: 2,
+                            trailer: false,
                             datum: "12345-123-123",
                             homepage: "anyHomepage",
                             titel: {
@@ -136,10 +134,9 @@ describe('GraphQL Mutations', () => {
             `,
         };
         const expectedMsg = [
-            expect.stringMatching(/^isbn /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^rabatt /u),
+            expect.stringMatching(/^episode /u),
             expect.stringMatching(/^datum /u),
             expect.stringMatching(/^homepage /u),
             expect.stringMatching(/^titel.titel /u),
@@ -182,12 +179,11 @@ describe('GraphQL Mutations', () => {
                         input: {
                             id: "40",
                             version: 0,
-                            isbn: "978-0-007-09732-6",
                             rating: 5,
-                            art: HARDCOVER,
+                            art: DVD,
                             preis: 444.44,
-                            rabatt: 0.099,
-                            lieferbar: false,
+                            episode: 4,
+                            trailer: false,
                             datum: "2021-04-04",
                             homepage: "https://update.mutation"
                             schlagwoerter: ["JAVA", "PYTHON"],
@@ -227,12 +223,11 @@ describe('GraphQL Mutations', () => {
                         input: {
                             id: "${id}",
                             version: 0,
-                            isbn: "falsche-ISBN",
-                            rating: -1,
-                            art: EPUB,
+                            rating: 4,
+                            art: STREAM,
                             preis: -1,
-                            rabatt: 2,
-                            lieferbar: false,
+                            episode: 2,
+                            trailer: false,
                             datum: "12345-123-123",
                             homepage: "anyHomepage",
                             schlagwoerter: ["JAVASCRIPT", "TYPESCRIPT"]
@@ -244,10 +239,9 @@ describe('GraphQL Mutations', () => {
             `,
         };
         const expectedMsg = [
-            expect.stringMatching(/^isbn /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^rabatt /u),
+            expect.stringMatching(/^episode /u),
             expect.stringMatching(/^datum /u),
             expect.stringMatching(/^homepage /u),
         ];
@@ -287,12 +281,11 @@ describe('GraphQL Mutations', () => {
                         input: {
                             id: "${id}",
                             version: 0,
-                            isbn: "978-0-007-09732-6",
                             rating: 5,
-                            art: EPUB,
+                            art: STREAM,
                             preis: 99.99,
-                            rabatt: 0.099,
-                            lieferbar: false,
+                            episode: 1,
+                            trailer: false,
                             datum: "2021-01-02",
                             homepage: "https://acme.com",
                             schlagwoerter: ["JAVASCRIPT", "TYPESCRIPT"]

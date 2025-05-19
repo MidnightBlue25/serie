@@ -62,31 +62,31 @@ export class SerieQueryResolver {
         return serie;
     }
 
-    @Query('buecher')
+    @Query('serien')
     @Public()
     async find(@Args() input: SuchkriterienInput | undefined) {
         this.#logger.debug('find: input=%o', input);
         const pageable = createPageable({});
-        const buecherSlice = await this.#service.find(
+        const serienSlice = await this.#service.find(
             input?.suchkriterien,
             pageable,
         );
-        this.#logger.debug('find: buecherSlice=%o', buecherSlice);
-        return buecherSlice.content;
+        this.#logger.debug('find: serienSlice=%o', serienSlice);
+        return serienSlice.content;
     }
 
-    @ResolveField('rabatt')
-    rabatt(@Parent() serie: Serie, short: boolean | undefined) {
+    @ResolveField('episode')
+    episode(@Parent() serie: Serie, short: boolean | undefined) {
         if (this.#logger.isLevelEnabled('debug')) {
             this.#logger.debug(
-                'rabatt: serie=%s, short=%s',
+                'episode: serie=%s, short=%s',
                 serie.toString(),
                 short,
             );
         }
         // "Nullish Coalescing" ab ES2020
-        const rabatt = serie.rabatt ?? Decimal(0);
+        const episode = serie.episode ?? Decimal(0);
         const shortStr = short === undefined || short ? '%' : 'Prozent';
-        return `${rabatt.toString()} ${shortStr}`;
+        return `${episode.toString()} ${shortStr}`;
     }
 }

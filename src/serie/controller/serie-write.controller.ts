@@ -56,7 +56,7 @@ import { AuthGuard, Public, Roles } from 'nest-keycloak-connect';
 import { paths } from '../../config/paths.js';
 import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
-import { type Abbildung } from '../entity/abbildung.entity.js';
+import { type Cover } from '../entity/cover.entity.js';
 import { type Serie } from '../entity/serie.entity.js';
 import { type Titel } from '../entity/titel.entity.js';
 import { SerieWriteService } from '../service/serie-write.service.js';
@@ -89,8 +89,8 @@ export class SerieWriteController {
      * dass damit die neu angelegte Serie abgerufen werden kann.
      *
      * Falls Constraints verletzt sind, wird der Statuscode `400` (`Bad Request`)
-     * gesetzt und genauso auch wenn der Titel oder die ISBN-Nummer bereits
-     * existieren.
+     * gesetzt und genauso auch wenn der Titel bereits
+     * existiert.
      *
      * @param serieDTO JSON-Daten für eine Serie im Request-Body.
      * @param req: Request-Objekt von Express für den Location-Header.
@@ -191,7 +191,7 @@ export class SerieWriteController {
      * required`) gesetzt; und falls sie nicht korrekt ist, der Statuscode `412`
      * (`Precondition failed`). Falls Constraints verletzt sind, wird der
      * Statuscode `400` (`Bad Request`) gesetzt und genauso auch wenn der neue
-     * Titel oder die neue ISBN-Nummer bereits existieren.
+     * Titel bereits existiert.
      *
      * @param serieDTO Seriedaten im Body des Request-Objekts.
      * @param id Pfad-Paramater für die ID.
@@ -279,29 +279,28 @@ export class SerieWriteController {
             untertitel: titelDTO.untertitel,
             serie: undefined,
         };
-        const abbildungen = serieDTO.abbildungen?.map((abbildungDTO) => {
-            const abbildung: Abbildung = {
+        const covers = serieDTO.covers?.map((coverDTO) => {
+            const cover: Cover = {
                 id: undefined,
-                beschriftung: abbildungDTO.beschriftung,
-                contentType: abbildungDTO.contentType,
+                beschriftung: coverDTO.beschriftung,
+                contentType: coverDTO.contentType,
                 serie: undefined,
             };
-            return abbildung;
+            return cover;
         });
         const serie = {
             id: undefined,
             version: undefined,
-            isbn: serieDTO.isbn,
             rating: serieDTO.rating,
             art: serieDTO.art,
             preis: Decimal(serieDTO.preis),
-            rabatt: Decimal(serieDTO.rabatt ?? '0'),
-            lieferbar: serieDTO.lieferbar,
+            episode: serieDTO.episode,
+            trailer: serieDTO.trailer,
             datum: serieDTO.datum,
             homepage: serieDTO.homepage,
             schlagwoerter: serieDTO.schlagwoerter,
             titel,
-            abbildungen,
+            covers,
             file: undefined,
             erzeugt: new Date(),
             aktualisiert: new Date(),
@@ -309,8 +308,8 @@ export class SerieWriteController {
 
         // Rueckwaertsverweise
         serie.titel.serie = serie;
-        serie.abbildungen?.forEach((abbildung) => {
-            abbildung.serie = serie;
+        serie.covers?.forEach((cover) => {
+            cover.serie = serie;
         });
         return serie;
     }
@@ -319,17 +318,16 @@ export class SerieWriteController {
         return {
             id: undefined,
             version: undefined,
-            isbn: serieDTO.isbn,
             rating: serieDTO.rating,
             art: serieDTO.art,
             preis: Decimal(serieDTO.preis),
-            rabatt: Decimal(serieDTO.rabatt ?? '0'),
-            lieferbar: serieDTO.lieferbar,
+            episode: serieDTO.episode,
+            trailer: serieDTO.trailer,
             datum: serieDTO.datum,
             homepage: serieDTO.homepage,
             schlagwoerter: serieDTO.schlagwoerter,
             titel: undefined,
-            abbildungen: undefined,
+            covers: undefined,
             file: undefined,
             erzeugt: undefined,
             aktualisiert: new Date(),

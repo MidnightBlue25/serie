@@ -23,7 +23,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { typeOrmModuleOptions } from '../../config/typeormOptions.js';
 import { getLogger } from '../../logger/logger.js';
-import { Abbildung } from '../entity/abbildung.entity.js';
+import { Cover } from '../entity/cover.entity.js';
 import { Serie } from '../entity/serie.entity.js';
 import { DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE } from './pageable.js';
 import { type Pageable } from './pageable.js';
@@ -34,8 +34,8 @@ import { type Suchkriterien } from './suchkriterien.js';
 export type BuildIdParams = {
     /** ID der gesuchten Serie. */
     readonly id: number;
-    /** Sollen die Abbildungen mitgeladen werden? */
-    readonly mitAbbildungen?: boolean;
+    /** Sollen die Covers mitgeladen werden? */
+    readonly mitCovers?: boolean;
 };
 /**
  * Die Klasse `QueryBuilder` implementiert das Lesen für Bücher und greift
@@ -51,9 +51,9 @@ export class QueryBuilder {
         .charAt(0)
         .toLowerCase()}${Titel.name.slice(1)}`;
 
-    readonly #abbildungAlias = `${Abbildung.name
+    readonly #coverAlias = `${Cover.name
         .charAt(0)
-        .toLowerCase()}${Abbildung.name.slice(1)}`;
+        .toLowerCase()}${Cover.name.slice(1)}`;
 
     readonly #repo: Repository<Serie>;
 
@@ -68,7 +68,7 @@ export class QueryBuilder {
      * @param id ID der gesuchten Serie
      * @returns QueryBuilder
      */
-    buildId({ id, mitAbbildungen = false }: BuildIdParams) {
+    buildId({ id, mitCovers = false }: BuildIdParams) {
         // QueryBuilder "serie" fuer Repository<Serie>
         const queryBuilder = this.#repo.createQueryBuilder(this.#serieAlias);
 
@@ -78,11 +78,11 @@ export class QueryBuilder {
             this.#titelAlias,
         );
 
-        if (mitAbbildungen) {
-            // Fetch-Join: aus QueryBuilder "serie" die Property "abbildungen" -> Tabelle "abbildung"
+        if (mitCovers) {
+            // Fetch-Join: aus QueryBuilder "serie" die Property "covers" -> Tabelle "cover"
             queryBuilder.leftJoinAndSelect(
-                `${this.#serieAlias}.abbildungen`,
-                this.#abbildungAlias,
+                `${this.#serieAlias}.covers`,
+                this.#coverAlias,
             );
         }
 

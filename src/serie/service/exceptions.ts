@@ -19,24 +19,9 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 /**
  * Das Modul besteht aus den Klassen für die Fehlerbehandlung bei der Verwaltung
- * von Büchern, z.B. beim DB-Zugriff.
+ * von Serien, z.B. beim DB-Zugriff.
  * @packageDocumentation
  */
-
-/**
- * Exception-Klasse für eine bereits existierende ISBN-Nummer.
- */
-export class IsbnExistsException extends HttpException {
-    readonly isbn: string | undefined;
-
-    constructor(isbn: string | undefined) {
-        super(
-            `Die ISBN-Nummer ${isbn} existiert bereits.`,
-            HttpStatus.UNPROCESSABLE_ENTITY,
-        );
-        this.isbn = isbn;
-    }
-}
 
 /**
  * Exception-Klasse für eine ungültige Versionsnummer beim Ändern.

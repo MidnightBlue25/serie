@@ -22,7 +22,7 @@ import { AuthGuard, Roles } from 'nest-keycloak-connect';
 import { getLogger } from '../../logger/logger.js';
 import { ResponseTimeInterceptor } from '../../logger/response-time.interceptor.js';
 import { SerieDTO } from '../controller/serieDTO.entity.js';
-import { type Abbildung } from '../entity/abbildung.entity.js';
+import { type Cover } from '../entity/cover.entity.js';
 import { type Serie } from '../entity/serie.entity.js';
 import { type Titel } from '../entity/titel.entity.js';
 import { SerieWriteService } from '../service/serie-write.service.js';
@@ -119,29 +119,28 @@ export class SerieMutationResolver {
             serie: undefined,
         };
         // "Optional Chaining" ab ES2020
-        const abbildungen = serieDTO.abbildungen?.map((abbildungDTO) => {
-            const abbildung: Abbildung = {
+        const covers = serieDTO.covers?.map((coverDTO) => {
+            const cover: Cover = {
                 id: undefined,
-                beschriftung: abbildungDTO.beschriftung,
-                contentType: abbildungDTO.contentType,
+                beschriftung: coverDTO.beschriftung,
+                contentType: coverDTO.contentType,
                 serie: undefined,
             };
-            return abbildung;
+            return cover;
         });
         const serie: Serie = {
             id: undefined,
             version: undefined,
-            isbn: serieDTO.isbn,
             rating: serieDTO.rating,
             art: serieDTO.art,
             preis: Decimal(serieDTO.preis),
-            rabatt: Decimal(serieDTO.rabatt ?? ''),
-            lieferbar: serieDTO.lieferbar,
+            episode: serieDTO.episode,
+            trailer: serieDTO.trailer,
             datum: serieDTO.datum,
             homepage: serieDTO.homepage,
             schlagwoerter: serieDTO.schlagwoerter,
             titel,
-            abbildungen,
+            covers,
             file: undefined,
             erzeugt: new Date(),
             aktualisiert: new Date(),
@@ -156,33 +155,21 @@ export class SerieMutationResolver {
         return {
             id: undefined,
             version: undefined,
-            isbn: serieDTO.isbn,
             rating: serieDTO.rating,
             art: serieDTO.art,
             preis: Decimal(serieDTO.preis),
-            rabatt: Decimal(serieDTO.rabatt ?? ''),
-            lieferbar: serieDTO.lieferbar,
+            episode: serieDTO.episode,
+            trailer: serieDTO.trailer,
             datum: serieDTO.datum,
             homepage: serieDTO.homepage,
             schlagwoerter: serieDTO.schlagwoerter,
             titel: undefined,
-            abbildungen: undefined,
+            covers: undefined,
             file: undefined,
             erzeugt: undefined,
             aktualisiert: new Date(),
         };
     }
-
-    // #errorMsgCreateSerie(err: CreateError) {
-    //     switch (err.type) {
-    //         case 'IsbnExists': {
-    //             return `Die ISBN ${err.isbn} existiert bereits`;
-    //         }
-    //         default: {
-    //             return 'Unbekannter Fehler';
-    //         }
-    //     }
-    // }
 
     // #errorMsgUpdateSerie(err: UpdateError) {
     //     switch (err.type) {

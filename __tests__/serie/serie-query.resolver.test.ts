@@ -33,9 +33,9 @@ import {
 
 type SerieDTO = Omit<
     Serie,
-    'abbildungen' | 'aktualisiert' | 'erzeugt' | 'rabatt'
+    'covers' | 'aktualisiert' | 'erzeugt' | 'episode'
 > & {
-    rabatt: string;
+    episode: string;
 };
 
 // -----------------------------------------------------------------------------
@@ -46,8 +46,6 @@ const idVorhanden = '1';
 const titelVorhanden = 'Alpha';
 const teilTitelVorhanden = 'a';
 const teilTitelNichtVorhanden = 'abc';
-
-const isbnVorhanden = '978-3-897-22583-1';
 
 const ratingMin = 3;
 const ratingNichtVorhanden = 99;
@@ -85,18 +83,17 @@ describe('GraphQL Queries', () => {
                 {
                     serie(id: "${idVorhanden}") {
                         version
-                        isbn
                         rating
                         art
                         preis
-                        lieferbar
+                        trailer
                         datum
                         homepage
                         schlagwoerter
                         titel {
                             titel
                         }
-                        rabatt(short: true)
+                        episode
                     }
                 }
             `,
@@ -162,7 +159,7 @@ describe('GraphQL Queries', () => {
         const body: GraphQLRequest = {
             query: `
                 {
-                    buecher(suchkriterien: {
+                    serien(suchkriterien: {
                         titel: "${titelVorhanden}"
                     }) {
                         art
@@ -184,12 +181,12 @@ describe('GraphQL Queries', () => {
         expect(data.errors).toBeUndefined();
         expect(data.data).toBeDefined();
 
-        const { buecher } = data.data! as { buecher: SerieDTO[] };
+        const { serien } = data.data! as { serien: SerieDTO[] };
 
-        expect(buecher).not.toHaveLength(0);
-        expect(buecher).toHaveLength(1);
+        expect(serien).not.toHaveLength(0);
+        expect(serien).toHaveLength(1);
 
-        const [serie] = buecher;
+        const [serie] = serien;
 
         expect(serie!.titel?.titel).toBe(titelVorhanden);
     });
@@ -199,7 +196,7 @@ describe('GraphQL Queries', () => {
         const body: GraphQLRequest = {
             query: `
                 {
-                    buecher(suchkriterien: {
+                    serien(suchkriterien: {
                         titel: "${teilTitelVorhanden}"
                     }) {
                         titel {
@@ -220,11 +217,11 @@ describe('GraphQL Queries', () => {
         expect(data.errors).toBeUndefined();
         expect(data.data).toBeDefined();
 
-        const { buecher } = data.data! as { buecher: SerieDTO[] };
+        const { serien } = data.data! as { serien: SerieDTO[] };
 
-        expect(buecher).not.toHaveLength(0);
+        expect(serien).not.toHaveLength(0);
 
-        buecher
+        serien
             .map((serie) => serie.titel)
             .forEach((titel) =>
                 expect(titel?.titel.toLowerCase()).toEqual(
@@ -238,7 +235,7 @@ describe('GraphQL Queries', () => {
         const body: GraphQLRequest = {
             query: `
                 {
-                    buecher(suchkriterien: {
+                    serien(suchkriterien: {
                         titel: "${teilTitelNichtVorhanden}"
                     }) {
                         art
@@ -257,7 +254,7 @@ describe('GraphQL Queries', () => {
         // then
         expect(status).toBe(HttpStatus.OK);
         expect(headers['content-type']).toMatch(/json/iu);
-        expect(data.data!.buecher).toBeNull();
+        expect(data.data!.serien).toBeNull();
 
         const { errors } = data;
 
@@ -266,58 +263,19 @@ describe('GraphQL Queries', () => {
         const [error] = errors!;
         const { message, path, extensions } = error;
 
-        expect(message).toMatch(/^Keine Buecher gefunden:/u);
+        expect(message).toMatch(/^Keine Serien gefunden:/u);
         expect(path).toBeDefined();
-        expect(path![0]).toBe('buecher');
+        expect(path![0]).toBe('serien');
         expect(extensions).toBeDefined();
         expect(extensions!.code).toBe('BAD_USER_INPUT');
     });
 
-    test('Serie zu vorhandener ISBN-Nummer', async () => {
+    test('Serien mit Mindest-"rating"', async () => {
         // given
         const body: GraphQLRequest = {
             query: `
                 {
-                    buecher(suchkriterien: {
-                        isbn: "${isbnVorhanden}"
-                    }) {
-                        isbn
-                        titel {
-                            titel
-                        }
-                    }
-                }
-            `,
-        };
-
-        // when
-        const { status, headers, data }: AxiosResponse<GraphQLResponseBody> =
-            await client.post(graphqlPath, body);
-
-        // then
-        expect(status).toBe(HttpStatus.OK);
-        expect(headers['content-type']).toMatch(/json/iu);
-        expect(data.errors).toBeUndefined();
-        expect(data.data).toBeDefined();
-
-        const { buecher } = data.data! as { buecher: SerieDTO[] };
-
-        expect(buecher).not.toHaveLength(0);
-        expect(buecher).toHaveLength(1);
-
-        const [serie] = buecher;
-        const { isbn, titel } = serie!;
-
-        expect(isbn).toBe(isbnVorhanden);
-        expect(titel?.titel).toBeDefined();
-    });
-
-    test('Buecher mit Mindest-"rating"', async () => {
-        // given
-        const body: GraphQLRequest = {
-            query: `
-                {
-                    buecher(suchkriterien: {
+                    serien(suchkriterien: {
                         rating: ${ratingMin},
                         titel: "${teilTitelVorhanden}"
                     }) {
@@ -341,11 +299,11 @@ describe('GraphQL Queries', () => {
 
         expect(data.data).toBeDefined();
 
-        const { buecher } = data.data! as { buecher: SerieDTO[] };
+        const { serien } = data.data! as { serien: SerieDTO[] };
 
-        expect(buecher).not.toHaveLength(0);
+        expect(serien).not.toHaveLength(0);
 
-        buecher.forEach((serie) => {
+        serien.forEach((serie) => {
             const { rating, titel } = serie;
 
             expect(rating).toBeGreaterThanOrEqual(ratingMin);
@@ -360,7 +318,7 @@ describe('GraphQL Queries', () => {
         const body: GraphQLRequest = {
             query: `
                 {
-                    buecher(suchkriterien: {
+                    serien(suchkriterien: {
                         rating: ${ratingNichtVorhanden}
                     }) {
                         titel {
@@ -378,7 +336,7 @@ describe('GraphQL Queries', () => {
         // then
         expect(status).toBe(HttpStatus.OK);
         expect(headers['content-type']).toMatch(/json/iu);
-        expect(data.data!.buecher).toBeNull();
+        expect(data.data!.serien).toBeNull();
 
         const { errors } = data;
 
@@ -387,20 +345,20 @@ describe('GraphQL Queries', () => {
         const [error] = errors!;
         const { message, path, extensions } = error;
 
-        expect(message).toMatch(/^Keine Buecher gefunden:/u);
+        expect(message).toMatch(/^Keine Serien gefunden:/u);
         expect(path).toBeDefined();
-        expect(path![0]).toBe('buecher');
+        expect(path![0]).toBe('serien');
         expect(extensions).toBeDefined();
         expect(extensions!.code).toBe('BAD_USER_INPUT');
     });
 
-    test('Buecher zur Art "EPUB"', async () => {
+    test('Serien zur Art "TV"', async () => {
         // given
-        const serieArt: SerieArt = 'EPUB';
+        const serieArt: SerieArt = 'TV';
         const body: GraphQLRequest = {
             query: `
                 {
-                    buecher(suchkriterien: {
+                    serien(suchkriterien: {
                         art: ${serieArt}
                     }) {
                         art
@@ -422,11 +380,11 @@ describe('GraphQL Queries', () => {
         expect(data.errors).toBeUndefined();
         expect(data.data).toBeDefined();
 
-        const { buecher } = data.data! as { buecher: SerieDTO[] };
+        const { serien } = data.data! as { serien: SerieDTO[] };
 
-        expect(buecher).not.toHaveLength(0);
+        expect(serien).not.toHaveLength(0);
 
-        buecher.forEach((serie) => {
+        serien.forEach((serie) => {
             const { art, titel } = serie;
 
             expect(art).toBe(serieArt);
@@ -434,13 +392,13 @@ describe('GraphQL Queries', () => {
         });
     });
 
-    test('Buecher zur einer ungueltigen Art', async () => {
+    test('Serien zur einer ungueltigen Art', async () => {
         // given
         const serieArt = 'UNGUELTIG';
         const body: GraphQLRequest = {
             query: `
                 {
-                    buecher(suchkriterien: {
+                    serien(suchkriterien: {
                         art: ${serieArt}
                     }) {
                         titel {
@@ -471,15 +429,15 @@ describe('GraphQL Queries', () => {
         expect(extensions!.code).toBe('GRAPHQL_VALIDATION_FAILED');
     });
 
-    test('Buecher mit lieferbar=true', async () => {
+    test('Serien mit trailer=true', async () => {
         // given
         const body: GraphQLRequest = {
             query: `
                 {
-                    buecher(suchkriterien: {
-                        lieferbar: true
+                    serien(suchkriterien: {
+                        trailer: true
                     }) {
-                        lieferbar
+                        trailer
                         titel {
                             titel
                         }
@@ -498,14 +456,14 @@ describe('GraphQL Queries', () => {
         expect(data.errors).toBeUndefined();
         expect(data.data).toBeDefined();
 
-        const { buecher } = data.data! as { buecher: SerieDTO[] };
+        const { serien } = data.data! as { serien: SerieDTO[] };
 
-        expect(buecher).not.toHaveLength(0);
+        expect(serien).not.toHaveLength(0);
 
-        buecher.forEach((serie) => {
-            const { lieferbar, titel } = serie;
+        serien.forEach((serie) => {
+            const { trailer, titel } = serie;
 
-            expect(lieferbar).toBe(true);
+            expect(trailer).toBe(true);
             expect(titel?.titel).toBeDefined();
         });
     });

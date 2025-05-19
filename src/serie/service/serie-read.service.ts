@@ -35,8 +35,8 @@ import { type Suchkriterien } from './suchkriterien.js';
 export type FindByIdParams = {
     /** ID der gesuchten Serie */
     readonly id: number;
-    /** Sollen die Abbildungen mitgeladen werden? */
-    readonly mitAbbildungen?: boolean;
+    /** Sollen die Covers mitgeladen werden? */
+    readonly mitCovers?: boolean;
 };
 
 /**
@@ -86,7 +86,7 @@ export class SerieReadService {
     // https://2ality.com/2015/01/es6-destructuring.html#simulating-named-parameters-in-javascript
     async findById({
         id,
-        mitAbbildungen = false,
+        mitCovers = false,
     }: FindByIdParams): Promise<Readonly<Serie>> {
         this.#logger.debug('findById: id=%d', id);
 
@@ -94,7 +94,7 @@ export class SerieReadService {
         // Das Resultat ist undefined, falls kein Datensatz gefunden
         // Lesen: Keine Transaktion erforderlich
         const serie = await this.#queryBuilder
-            .buildId({ id, mitAbbildungen })
+            .buildId({ id, mitCovers })
             .getOne();
         if (serie === null) {
             throw new NotFoundException(
@@ -111,10 +111,10 @@ export class SerieReadService {
                 serie.toString(),
                 serie.titel,
             );
-            if (mitAbbildungen) {
+            if (mitCovers) {
                 this.#logger.debug(
-                    'findById: abbildungen=%o',
-                    serie.abbildungen,
+                    'findById: covers=%o',
+                    serie.covers,
                 );
             }
         }
@@ -247,9 +247,9 @@ export class SerieReadService {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         return (
             art === undefined ||
-            art === 'EPUB' ||
-            art === 'HARDCOVER' ||
-            art === 'PAPERBACK'
+            art === 'STREAM' ||
+            art === 'TV' ||
+            art === 'DVD'
         );
     }
 }

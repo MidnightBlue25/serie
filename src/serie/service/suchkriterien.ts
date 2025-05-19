@@ -24,12 +24,11 @@ import { type SerieArt } from '../entity/serie.entity.js';
  * Typdefinition für `find` in `serie-read.service` und `QueryBuilder.build()`.
  */
 export interface Suchkriterien {
-    readonly isbn?: string;
     readonly rating?: number | string;
     readonly art?: SerieArt;
     readonly preis?: number;
-    readonly rabatt?: number;
-    readonly lieferbar?: boolean;
+    readonly episode?: number;
+    readonly trailer?: boolean;
     readonly datum?: string;
     readonly homepage?: string;
     readonly javascript?: string;

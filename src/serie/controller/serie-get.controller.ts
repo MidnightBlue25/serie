@@ -67,9 +67,6 @@ import { paths } from '../../config/paths.js';
  */
 export class SerieQuery implements Suchkriterien {
     @ApiProperty({ required: false })
-    declare readonly isbn?: string;
-
-    @ApiProperty({ required: false })
     declare readonly rating?: number;
 
     @ApiProperty({ required: false })
@@ -79,10 +76,10 @@ export class SerieQuery implements Suchkriterien {
     declare readonly preis?: number;
 
     @ApiProperty({ required: false })
-    declare readonly rabatt?: number;
+    declare readonly episode?: number;
 
     @ApiProperty({ required: false })
-    declare readonly lieferbar?: boolean;
+    declare readonly trailer?: boolean;
 
     @ApiProperty({ required: false })
     declare readonly datum?: string;
@@ -252,8 +249,8 @@ export class SerieGetController {
         this.#logger.debug('get: query=%o', query);
 
         const pageable = createPageable({ number: page, size });
-        const buecherSlice = await this.#service.find(query, pageable);
-        const seriePage = createPage(buecherSlice, pageable);
+        const serienSlice = await this.#service.find(query, pageable);
+        const seriePage = createPage(serienSlice, pageable);
         this.#logger.debug('get: seriePage=%o', seriePage);
 
         return res.json(seriePage).send();

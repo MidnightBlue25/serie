@@ -50,7 +50,7 @@ import {
     VersionColumn,
 } from 'typeorm';
 import { dbType } from '../../config/db.js';
-import { Abbildung } from './abbildung.entity.js';
+import { Cover } from './cover.entity.js';
 import { SerieFile } from './serieFile.entity.js';
 import { DecimalTransformer } from './decimal-transformer.js';
 import { Titel } from './titel.entity.js';
@@ -58,7 +58,7 @@ import { Titel } from './titel.entity.js';
 /**
  * Alias-Typ für gültige Strings bei der Art eine Serie.
  */
-export type SerieArt = 'EPUB' | 'HARDCOVER' | 'PAPERBACK';
+export type SerieArt = 'STREAM' | 'TV' | 'DVD';
 
 /**
  * Entity-Klasse zu einer relationalen Tabelle.
@@ -78,16 +78,12 @@ export class Serie {
     @VersionColumn()
     readonly version: number | undefined;
 
-    @Column('varchar')
-    @ApiProperty({ example: '0-0070-0644-6', type: String })
-    readonly isbn: string | undefined;
-
     @Column('int')
     @ApiProperty({ example: 5, type: Number })
     readonly rating: number | undefined;
 
     @Column('varchar')
-    @ApiProperty({ example: 'EPUB', type: String })
+    @ApiProperty({ example: 'STREAM', type: String })
     readonly art: SerieArt | undefined;
 
     // TypeORM liest Gleitkommazahlen als String: Rundungsfehler vermeiden
@@ -101,17 +97,13 @@ export class Serie {
     // Decimal aus decimal.js analog zu BigDecimal von Java
     readonly preis: Decimal | undefined;
 
-    @Column('decimal', {
-        precision: 4,
-        scale: 3,
-        transformer: new DecimalTransformer(),
-    })
-    @ApiProperty({ example: 0.1, type: Number })
-    readonly rabatt: Decimal | undefined;
+    @Column('int')
+    @ApiProperty({ example: 12, type: Number })
+    readonly episode: number | undefined;
 
     @Column('decimal') // TypeORM unterstuetzt bei Oracle *NICHT* den Typ boolean
     @ApiProperty({ example: true, type: Boolean })
-    readonly lieferbar: boolean | undefined;
+    readonly trailer: boolean | undefined;
 
     @Column('date')
     @ApiProperty({ example: '2021-01-31' })
@@ -134,10 +126,10 @@ export class Serie {
     readonly titel: Titel | undefined;
 
     // undefined wegen Updates
-    @OneToMany(() => Abbildung, (abbildung) => abbildung.serie, {
+    @OneToMany(() => Cover, (cover) => cover.serie, {
         cascade: ['insert', 'remove'],
     })
-    readonly abbildungen: Abbildung[] | undefined;
+    readonly covers: Cover[] | undefined;
 
     @OneToOne(() => SerieFile, (serieFile) => serieFile.serie, {
         cascade: ['insert', 'remove'],
@@ -162,12 +154,11 @@ export class Serie {
         JSON.stringify({
             id: this.id,
             version: this.version,
-            isbn: this.isbn,
             rating: this.rating,
             art: this.art,
             preis: this.preis,
-            rabatt: this.rabatt,
-            lieferbar: this.lieferbar,
+            episode: this.episode,
+            trailer: this.trailer,
             datum: this.datum,
             homepage: this.homepage,
             schlagwoerter: this.schlagwoerter,

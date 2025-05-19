@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { Abbildung } from './abbildung.entity.js';
+import { Cover } from './cover.entity.js';
 import { Serie } from './serie.entity.js';
 import { SerieFile } from './serieFile.entity.js';
 import { Titel } from './titel.entity.js';
 
 // erforderlich in src/config/db.ts und src/serie/serie.module.ts
-export const entities = [Abbildung, Serie, SerieFile, Titel];
+export const entities = [Cover, Serie, SerieFile, Titel];

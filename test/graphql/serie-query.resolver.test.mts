@@ -27,9 +27,9 @@ import { baseURL, httpsAgent } from '../constants.mjs';
 
 type SerieDTO = Omit<
     Serie,
-    'abbildungen' | 'aktualisiert' | 'erzeugt' | 'rabatt'
+    'covers' | 'aktualisiert' | 'erzeugt' | 'episode'
 > & {
-    rabatt: string;
+    episode: string;
 };
 
 // -----------------------------------------------------------------------------
@@ -40,8 +40,6 @@ const idVorhanden = '1';
 const titelVorhanden = 'Alpha';
 const teilTitelVorhanden = 'a';
 const teilTitelNichtVorhanden = 'abc';
-
-const isbnVorhanden = '978-3-897-22583-1';
 
 const ratingMin = 3;
 const ratingNichtVorhanden = 99;
@@ -73,18 +71,17 @@ describe('GraphQL Queries', () => {
                 {
                     serie(id: "${idVorhanden}") {
                         version
-                        isbn
                         rating
                         art
                         preis
-                        lieferbar
+                        trailer
                         datum
                         homepage
                         schlagwoerter
                         titel {
                             titel
                         }
-                        rabatt(short: true)
+                        episode
                     }
                 }
             `,
@@ -261,23 +258,6 @@ describe('GraphQL Queries', () => {
         expect(extensions!.code).toBe('BAD_USER_INPUT');
     });
 
-    test.concurrent('Serie zu vorhandener ISBN-Nummer', async () => {
-        // given
-        const body: GraphQLRequest = {
-            query: `
-                {
-                    serien(suchkriterien: {
-                        isbn: "${isbnVorhanden}"
-                    }) {
-                        isbn
-                        titel {
-                            titel
-                        }
-                    }
-                }
-            `,
-        };
-
         // when
         const { status, headers, data }: AxiosResponse<GraphQLResponseBody> =
             await client.post(graphqlPath, body);
@@ -294,9 +274,8 @@ describe('GraphQL Queries', () => {
         expect(serien).toHaveLength(1);
 
         const [serie] = serien;
-        const { isbn, titel } = serie!;
+        const { titel } = serie!;
 
-        expect(isbn).toBe(isbnVorhanden);
         expect(titel?.titel).toBeDefined();
     });
 
@@ -382,9 +361,9 @@ describe('GraphQL Queries', () => {
         expect(extensions!.code).toBe('BAD_USER_INPUT');
     });
 
-    test.concurrent('Serien zur Art "EPUB"', async () => {
+    test.concurrent('Serien zur Art "STREAM"', async () => {
         // given
-        const serieArt: SerieArt = 'EPUB';
+        const serieArt: SerieArt = 'STREAM';
         const body: GraphQLRequest = {
             query: `
                 {
@@ -459,15 +438,15 @@ describe('GraphQL Queries', () => {
         expect(extensions!.code).toBe('GRAPHQL_VALIDATION_FAILED');
     });
 
-    test.concurrent('Serien mit lieferbar=true', async () => {
+    test.concurrent('Serien mit trailer=true', async () => {
         // given
         const body: GraphQLRequest = {
             query: `
                 {
                     serien(suchkriterien: {
-                        lieferbar: true
+                        trailer: true
                     }) {
-                        lieferbar
+                        trailer
                         titel {
                             titel
                         }
@@ -491,9 +470,9 @@ describe('GraphQL Queries', () => {
         expect(serien).not.toHaveLength(0);
 
         serien.forEach((serie) => {
-            const { lieferbar, titel } = serie;
+            const { trailer, titel } = serie;
 
-            expect(lieferbar).toBe(true);
+            expect(trailer).toBe(true);
             expect(titel?.titel).toBeDefined();
         });
     });

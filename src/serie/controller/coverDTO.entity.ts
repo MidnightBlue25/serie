@@ -24,9 +24,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import { MaxLength } from 'class-validator';
 
 /**
- * Entity-Klasse für Abbildung ohne TypeORM.
+ * Entity-Klasse für Cover ohne TypeORM.
  */
-export class AbbildungDTO {
+export class CoverDTO {
     @MaxLength(32)
     @ApiProperty({ example: 'Die Beschriftung', type: String })
     readonly beschriftung!: string;

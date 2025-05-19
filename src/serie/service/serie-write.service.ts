@@ -24,13 +24,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { type DeleteResult, Repository } from 'typeorm';
 import { getLogger } from '../../logger/logger.js';
 import { MailService } from '../../mail/mail.service.js';
-import { Abbildung } from '../entity/abbildung.entity.js';
+import { Cover } from '../entity/cover.entity.js';
 import { Serie } from '../entity/serie.entity.js';
 import { SerieFile } from '../entity/serieFile.entity.js';
 import { Titel } from '../entity/titel.entity.js';
 import { SerieReadService } from './serie-read.service.js';
 import {
-    IsbnExistsException,
     VersionInvalidException,
     VersionOutdatedException,
 } from './exceptions.js';
@@ -86,7 +85,6 @@ export class SerieWriteService {
      * Eine neues Serie soll angelegt werden.
      * @param serie Die neu abzulegende Serie
      * @returns Die ID der neu angelegten Serie
-     * @throws IsbnExists falls die ISBN-Nummer bereits existiert
      */
     async create(serie: Serie) {
         this.#logger.debug('create: serie=%o', serie);
@@ -196,7 +194,7 @@ export class SerieWriteService {
         this.#logger.debug('delete: id=%d', id);
         const serie = await this.#readService.findById({
             id,
-            mitAbbildungen: true,
+            mitCovers: true,
         });
 
         let deleteResult: DeleteResult | undefined;
@@ -209,9 +207,9 @@ export class SerieWriteService {
                 await transactionalMgr.delete(Titel, titelId);
             }
             // "Nullish Coalescing" ab ES2020
-            const abbildungen = serie.abbildungen ?? [];
-            for (const abbildung of abbildungen) {
-                await transactionalMgr.delete(Abbildung, abbildung.id);
+            const covers = serie.covers ?? [];
+            for (const cover of covers) {
+                await transactionalMgr.delete(Cover, cover.id);
             }
 
             deleteResult = await transactionalMgr.delete(Serie, id);
@@ -223,13 +221,6 @@ export class SerieWriteService {
             deleteResult.affected !== null &&
             deleteResult.affected > 0
         );
-    }
-
-    async #validateCreate({ isbn }: Serie): Promise<undefined> {
-        this.#logger.debug('#validateCreate: isbn=%s', isbn);
-        if (await this.#repo.existsBy({ isbn })) {
-            throw new IsbnExistsException(isbn);
-        }
     }
 
     async #sendmail(serie: Serie) {

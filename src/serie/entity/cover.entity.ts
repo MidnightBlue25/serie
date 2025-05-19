@@ -23,7 +23,7 @@ import {
 import { Serie } from './serie.entity.js';
 
 @Entity()
-export class Abbildung {
+export class Cover {
     // https://typeorm.io/entities#primary-columns
     // CAVEAT: zuerst @Column() und erst dann @PrimaryGeneratedColumn()
     @PrimaryGeneratedColumn()
@@ -35,7 +35,7 @@ export class Abbildung {
     @Column('varchar')
     readonly contentType: string | undefined;
 
-    @ManyToOne(() => Serie, (serie) => serie.abbildungen)
+    @ManyToOne(() => Serie, (serie) => serie.covers)
     @JoinColumn({ name: 'serie_id' })
     serie: Serie | undefined;
 
