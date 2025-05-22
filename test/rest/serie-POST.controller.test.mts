@@ -16,11 +16,9 @@
 import { beforeAll, describe, expect, inject, test } from 'vitest';
 import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
-import { Decimal } from 'decimal.js';
 import { type SerieDTO } from '../../src/serie/controller/serieDTO.entity.js';
 import { SerieReadService } from '../../src/serie/service/serie-read.service.js';
 import { baseURL, httpsAgent } from '../constants.mjs';
-import { type ErrorResponse } from './error-response.mjs';
 
 const token = inject('tokenRest');
 
