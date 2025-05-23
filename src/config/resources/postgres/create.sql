@@ -37,7 +37,7 @@ ALTER ROLE serie SET search_path = 'serie';
 
 -- https://www.postgresql.org/docs/current/sql-createtype.html
 -- https://www.postgresql.org/docs/current/datatype-enum.html
-CREATE TYPE serieart AS ENUM ('EPUB', 'HARDCOVER', 'PAPERBACK');
+CREATE TYPE serieart AS ENUM ('STREAM', 'TV', 'DVD');
 
 -- https://www.postgresql.org/docs/current/sql-createtable.html
 -- https://www.postgresql.org/docs/current/datatype.html
@@ -52,7 +52,6 @@ CREATE TABLE IF NOT EXISTS serie (
     version       integer NOT NULL DEFAULT 0,
                   -- impliziter Index als B-Baum durch UNIQUE
                   -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS
-    isbn          text NOT NULL UNIQUE USING INDEX TABLESPACE seriespace,
                   -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS
                   -- https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP
     rating        integer NOT NULL CHECK (rating >= 0 AND rating <= 5),
@@ -60,9 +59,9 @@ CREATE TABLE IF NOT EXISTS serie (
                   -- https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-NUMERIC-DECIMAL
                   -- 10 Stellen, davon 2 Nachkommastellen
     preis         decimal(8,2) NOT NULL,
-    rabatt        decimal(4,3) NOT NULL,
+    episode       integer NOT NULL CHECK (episode >= 0 AND episode <= 14),
                   -- https://www.postgresql.org/docs/current/datatype-boolean.html
-    lieferbar     boolean NOT NULL DEFAULT FALSE,
+    trailer     boolean NOT NULL DEFAULT FALSE,
                   -- https://www.postgresql.org/docs/current/datatype-datetime.html
     datum         date,
     homepage      text,
@@ -81,13 +80,13 @@ CREATE TABLE IF NOT EXISTS titel (
 ) TABLESPACE seriespace;
 
 
-CREATE TABLE IF NOT EXISTS abbildung (
+CREATE TABLE IF NOT EXISTS cover (
     id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE seriespace,
     beschriftung    text NOT NULL,
     content_type    text NOT NULL,
     serie_id         integer NOT NULL REFERENCES serie
 ) TABLESPACE seriespace;
-CREATE INDEX IF NOT EXISTS abbildung_serie_id_idx ON abbildung(serie_id) TABLESPACE seriespace;
+CREATE INDEX IF NOT EXISTS cover_serie_id_idx ON cover(serie_id) TABLESPACE seriespace;
 
 CREATE TABLE IF NOT EXISTS serie_file (
     id              integer GENERATED ALWAYS AS IDENTITY(START WITH 1000) PRIMARY KEY USING INDEX TABLESPACE seriespace,
