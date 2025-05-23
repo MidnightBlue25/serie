@@ -181,37 +181,37 @@ export class SerieReadService {
         // Das Resultat ist eine leere Liste, falls nichts gefunden
         // Lesen: Keine Transaktion erforderlich
         const queryBuilder = this.#queryBuilder.build(suchkriterien, pageable);
-        const buecher = await queryBuilder.getMany();
-        if (buecher.length === 0) {
-            this.#logger.debug('find: Keine Buecher gefunden');
+        const serien = await queryBuilder.getMany();
+        if (serien.length === 0) {
+            this.#logger.debug('find: Keine Serien gefunden');
             throw new NotFoundException(
-                `Keine Buecher gefunden: ${JSON.stringify(suchkriterien)}, Seite ${pageable.number}}`,
+                `Keine Serien gefunden: ${JSON.stringify(suchkriterien)}, Seite ${pageable.number}}`,
             );
         }
         const totalElements = await queryBuilder.getCount();
-        return this.#createSlice(buecher, totalElements);
+        return this.#createSlice(serien, totalElements);
     }
 
     async #findAll(pageable: Pageable) {
         const queryBuilder = this.#queryBuilder.build({}, pageable);
-        const buecher = await queryBuilder.getMany();
-        if (buecher.length === 0) {
+        const serien = await queryBuilder.getMany();
+        if (serien.length === 0) {
             throw new NotFoundException(
                 `Ungueltige Seite "${pageable.number}"`,
             );
         }
         const totalElements = await queryBuilder.getCount();
-        return this.#createSlice(buecher, totalElements);
+        return this.#createSlice(serien, totalElements);
     }
 
-    #createSlice(buecher: Serie[], totalElements: number) {
-        buecher.forEach((serie) => {
+    #createSlice(serien: Serie[], totalElements: number) {
+        serien.forEach((serie) => {
             if (serie.schlagwoerter === null) {
                 serie.schlagwoerter = [];
             }
         });
         const serieSlice: Slice<Serie> = {
-            content: buecher,
+            content: serien,
             totalElements,
         };
         this.#logger.debug('createSlice: serieSlice=%o', serieSlice);
