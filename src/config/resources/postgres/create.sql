@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS serie (
     version       integer NOT NULL DEFAULT 0,
                   -- impliziter Index als B-Baum durch UNIQUE
                   -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-UNIQUE-CONSTRAINTS
+    seriennummer  text NOT NULL UNIQUE USING INDEX TABLESPACE seriespace,
                   -- https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS
                   -- https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-POSIX-REGEXP
     rating        integer NOT NULL CHECK (rating >= 0 AND rating <= 5),
@@ -59,7 +60,7 @@ CREATE TABLE IF NOT EXISTS serie (
                   -- https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-NUMERIC-DECIMAL
                   -- 10 Stellen, davon 2 Nachkommastellen
     preis         decimal(8,2) NOT NULL,
-    episode       integer NOT NULL CHECK (episode >= 0 AND episode <= 14),
+    rabatt        decimal(4,3) NOT NULL,
                   -- https://www.postgresql.org/docs/current/datatype-boolean.html
     trailer     boolean NOT NULL DEFAULT FALSE,
                   -- https://www.postgresql.org/docs/current/datatype-datetime.html
