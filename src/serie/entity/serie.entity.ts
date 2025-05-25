@@ -78,6 +78,10 @@ export class Serie {
     @VersionColumn()
     readonly version: number | undefined;
 
+    @Column('varchar')
+    @ApiProperty({ example: 'SER-123456', type: String })
+    readonly seriennummer: string | undefined;
+
     @Column('int')
     @ApiProperty({ example: 5, type: Number })
     readonly rating: number | undefined;
@@ -97,9 +101,13 @@ export class Serie {
     // Decimal aus decimal.js analog zu BigDecimal von Java
     readonly preis: Decimal | undefined;
 
-    @Column('int')
-    @ApiProperty({ example: 12, type: Number })
-    readonly episode: number | undefined;
+    @Column('decimal', {
+        precision: 4,
+        scale: 3,
+        transformer: new DecimalTransformer(),
+    })
+    @ApiProperty({ example: 0.1, type: Number })
+    readonly rabatt: Decimal | undefined;
 
     @Column('decimal') // TypeORM unterstuetzt bei Oracle *NICHT* den Typ boolean
     @ApiProperty({ example: true, type: Boolean })
@@ -154,10 +162,11 @@ export class Serie {
         JSON.stringify({
             id: this.id,
             version: this.version,
+            seriennummer: this.seriennummer,
             rating: this.rating,
             art: this.art,
             preis: this.preis,
-            episode: this.episode,
+            rabatt: this.rabatt,
             trailer: this.trailer,
             datum: this.datum,
             homepage: this.homepage,

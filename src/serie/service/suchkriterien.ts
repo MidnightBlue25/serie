@@ -18,16 +18,17 @@
  * @packageDocumentation
  */
 
-import { type SerieArt } from '../entity/serie.entity.js';
+import { type SerieArt } from './../entity/serie.entity.js';
 
 /**
  * Typdefinition für `find` in `serie-read.service` und `QueryBuilder.build()`.
  */
 export interface Suchkriterien {
+    readonly seriennummer?: string;
     readonly rating?: number | string;
     readonly art?: SerieArt;
     readonly preis?: number;
-    readonly episode?: number;
+    readonly rabatt?: number;
     readonly trailer?: boolean;
     readonly datum?: string;
     readonly homepage?: string;

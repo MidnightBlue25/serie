@@ -57,6 +57,7 @@ type Serie {
   # ID ist bei Apollo ein String
   id: Int!
   version: Int!
+  seriennummer: String!
   rating: Int
   art: Art
   preis: Float!
@@ -67,7 +68,7 @@ type Serie {
   # 1:1-Beziehung
   titel: Titel!
   # field mit @ResolveField
-  episode: Int
+  rabatt(short: Boolean): String!
 }
 
 "Enum-Typ für die Art einer Serie"
@@ -80,6 +81,7 @@ enum Art {
 "Suchkriterien für Bücher"
 input SuchkriterienInput {
   titel: String
+  seriennummer: String
   rating: Int
   art: Art
   trailer: Boolean
@@ -99,10 +101,11 @@ input CoverInput {
 
 "Daten für eine neue Serie"
 input SerieInput {
+  seriennummer: String
   rating: Int
   art: Art
   preis: Float
-  episode: Int
+  rabatt: Float
   trailer: Boolean
   datum: String
   homepage: String
@@ -119,10 +122,11 @@ type CreatePayload {
 input SerieUpdateInput {
   id: ID
   version: Int
+  seriennummer: String
   rating: Int
   art: Art
   preis: Float
-  episode: Int
+  rabatt: Float
   trailer: Boolean
   datum: String
   homepage: String

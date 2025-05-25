@@ -191,7 +191,7 @@ export class SerieWriteController {
      * required`) gesetzt; und falls sie nicht korrekt ist, der Statuscode `412`
      * (`Precondition failed`). Falls Constraints verletzt sind, wird der
      * Statuscode `400` (`Bad Request`) gesetzt und genauso auch wenn der neue
-     * Titel bereits existiert.
+     * Titel oder die neue Seriennummer bereits existieren.
      *
      * @param serieDTO Seriedaten im Body des Request-Objekts.
      * @param id Pfad-Paramater für die ID.
@@ -291,10 +291,11 @@ export class SerieWriteController {
         const serie = {
             id: undefined,
             version: undefined,
+            seriennummer: serieDTO.seriennummer,
             rating: serieDTO.rating,
             art: serieDTO.art,
             preis: Decimal(serieDTO.preis),
-            episode: serieDTO.episode,
+            rabatt: Decimal(serieDTO.rabatt ?? '0'),
             trailer: serieDTO.trailer,
             datum: serieDTO.datum,
             homepage: serieDTO.homepage,
@@ -318,10 +319,11 @@ export class SerieWriteController {
         return {
             id: undefined,
             version: undefined,
+            seriennummer: serieDTO.seriennummer,
             rating: serieDTO.rating,
             art: serieDTO.art,
             preis: Decimal(serieDTO.preis),
-            episode: serieDTO.episode,
+            rabatt: Decimal(serieDTO.rabatt ?? '0'),
             trailer: serieDTO.trailer,
             datum: serieDTO.datum,
             homepage: serieDTO.homepage,

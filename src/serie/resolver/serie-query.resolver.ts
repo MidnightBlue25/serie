@@ -75,18 +75,18 @@ export class SerieQueryResolver {
         return serienSlice.content;
     }
 
-    @ResolveField('episode')
-    episode(@Parent() serie: Serie, short: boolean | undefined) {
+    @ResolveField('rabatt')
+    rabatt(@Parent() serie: Serie, short: boolean | undefined) {
         if (this.#logger.isLevelEnabled('debug')) {
             this.#logger.debug(
-                'episode: serie=%s, short=%s',
+                'rabatt: serie=%s, short=%s',
                 serie.toString(),
                 short,
             );
         }
         // "Nullish Coalescing" ab ES2020
-        const episode = serie.episode ?? Decimal(0);
+        const rabatt = serie.rabatt ?? Decimal(0);
         const shortStr = short === undefined || short ? '%' : 'Prozent';
-        return `${episode.toString()} ${shortStr}`;
+        return `${rabatt.toString()} ${shortStr}`;
     }
 }

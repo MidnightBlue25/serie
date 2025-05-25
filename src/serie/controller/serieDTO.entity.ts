@@ -104,6 +104,11 @@ class DecimalMax implements ValidatorConstraintInterface {
  * Entity-Klasse für Bücher ohne TypeORM und ohne Referenzen.
  */
 export class SerieDtoOhneRef {
+    // https://www.oreilly.com/library/view/regular-expressions-cookbook/9781449327453/ch04s13.html
+    @Matches(/^SER-\d{6}$/)
+    @ApiProperty({ example: 'SER-123456', type: String })
+    readonly seriennummer!: string;
+
     @IsInt()
     @Min(0)
     @Max(MAX_RATING)
@@ -124,10 +129,16 @@ export class SerieDtoOhneRef {
     // Decimal aus decimal.js analog zu BigDecimal von Java
     readonly preis!: Decimal;
 
-    @IsInt()
-    @Min(0)
-    @ApiProperty({ example: 12, type: Number })
-    readonly episode!: number;
+    @Transform(number2Percent)
+    @Validate(DecimalMin, [Decimal(0)], {
+        message: 'rabatt muss positiv sein.',
+    })
+    @Validate(DecimalMax, [Decimal(1)], {
+        message: 'rabatt muss kleiner 1 sein.',
+    })
+    @IsOptional()
+    @ApiProperty({ example: 0.1, type: Number })
+    readonly rabatt: Decimal | undefined;
 
     @IsBoolean()
     @IsOptional()

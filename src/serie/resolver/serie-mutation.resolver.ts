@@ -131,10 +131,11 @@ export class SerieMutationResolver {
         const serie: Serie = {
             id: undefined,
             version: undefined,
+            seriennummer: serieDTO.seriennummer,
             rating: serieDTO.rating,
             art: serieDTO.art,
             preis: Decimal(serieDTO.preis),
-            episode: serieDTO.episode,
+            rabatt: Decimal(serieDTO.rabatt ?? ''),
             trailer: serieDTO.trailer,
             datum: serieDTO.datum,
             homepage: serieDTO.homepage,
@@ -155,10 +156,11 @@ export class SerieMutationResolver {
         return {
             id: undefined,
             version: undefined,
+            seriennummer: serieDTO.seriennummer,
             rating: serieDTO.rating,
             art: serieDTO.art,
             preis: Decimal(serieDTO.preis),
-            episode: serieDTO.episode,
+            rabatt: Decimal(serieDTO.rabatt ?? ''),
             trailer: serieDTO.trailer,
             datum: serieDTO.datum,
             homepage: serieDTO.homepage,
@@ -170,6 +172,17 @@ export class SerieMutationResolver {
             aktualisiert: new Date(),
         };
     }
+
+    // #errorMsgCreateBuch(err: CreateError) {
+    //     switch (err.type) {
+    //         case 'IsbnExists': {
+    //             return `Die ISBN ${err.isbn} existiert bereits`;
+    //         }
+    //         default: {
+    //             return 'Unbekannter Fehler';
+    //         }
+    //     }
+    // }
 
     // #errorMsgUpdateSerie(err: UpdateError) {
     //     switch (err.type) {

@@ -67,6 +67,9 @@ import { paths } from '../../config/paths.js';
  */
 export class SerieQuery implements Suchkriterien {
     @ApiProperty({ required: false })
+    declare readonly seriennummer?: string;
+
+    @ApiProperty({ required: false })
     declare readonly rating?: number;
 
     @ApiProperty({ required: false })
@@ -76,7 +79,7 @@ export class SerieQuery implements Suchkriterien {
     declare readonly preis?: number;
 
     @ApiProperty({ required: false })
-    declare readonly episode?: number;
+    declare readonly rabatt?: number;
 
     @ApiProperty({ required: false })
     declare readonly trailer?: boolean;
