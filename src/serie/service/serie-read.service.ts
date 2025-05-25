@@ -97,9 +97,7 @@ export class SerieReadService {
             .buildId({ id, mitCovers })
             .getOne();
         if (serie === null) {
-            throw new NotFoundException(
-                `Es gibt keine Serie mit der ID ${id}.`,
-            );
+            throw new NotFoundException(`Es gibt keine Serie mit der ID ${id}.`);
         }
         if (serie.schlagwoerter === null) {
             serie.schlagwoerter = [];
@@ -139,10 +137,7 @@ export class SerieReadService {
             return;
         }
 
-        this.#logger.debug(
-            'findFileBySerieId: filename=%s',
-            serieFile.filename,
-        );
+        this.#logger.debug('findFileBySerieId: filename=%s', serieFile.filename);
         return serieFile;
     }
 
@@ -196,12 +191,11 @@ export class SerieReadService {
         const queryBuilder = this.#queryBuilder.build({}, pageable);
         const serien = await queryBuilder.getMany();
         if (serien.length === 0) {
-            throw new NotFoundException(
-                `Ungueltige Seite "${pageable.number}"`,
-            );
+            throw new NotFoundException(`Ungueltige Seite "${pageable.number}"`);
         }
         const totalElements = await queryBuilder.getCount();
         return this.#createSlice(serien, totalElements);
+        
     }
 
     #createSlice(serien: Serie[], totalElements: number) {

@@ -30,6 +30,7 @@ import { SerieFile } from '../entity/serieFile.entity.js';
 import { Titel } from '../entity/titel.entity.js';
 import { SerieReadService } from './serie-read.service.js';
 import {
+    SeriennummerExistsException,
     VersionInvalidException,
     VersionOutdatedException,
 } from './exceptions.js';
@@ -82,13 +83,14 @@ export class SerieWriteService {
     }
 
     /**
-     * Eine neues Serie soll angelegt werden.
+     * Eine neue Serie soll angelegt werden.
      * @param serie Die neu abzulegende Serie
      * @returns Die ID der neu angelegten Serie
+     * @throws SeriennummerExists falls die Seriennummer bereits existiert
      */
     async create(serie: Serie) {
         this.#logger.debug('create: serie=%o', serie);
-        await this.#validateCreate(serie);
+                await this.#validateCreate(serie);
 
         const serieDb = await this.#repo.save(serie); // implizite Transaktion
         await this.#sendmail(serieDb);
@@ -164,9 +166,7 @@ export class SerieWriteService {
         );
         if (id === undefined) {
             this.#logger.debug('update: Keine gueltige ID');
-            throw new NotFoundException(
-                `Es gibt keine Serie mit der ID ${id}.`,
-            );
+            throw new NotFoundException(`Es gibt keine Serie mit der ID ${id}.`);
         }
 
         const validateResult = await this.#validateUpdate(serie, id, version);
@@ -221,6 +221,13 @@ export class SerieWriteService {
             deleteResult.affected !== null &&
             deleteResult.affected > 0
         );
+    }
+
+    async #validateCreate({ seriennummer }: Serie): Promise<undefined> {
+        this.#logger.debug('#validateCreate: seriennummer=%s', seriennummer);
+        if (await this.#repo.existsBy({ seriennummer })) {
+            throw new SeriennummerExistsException(seriennummer);
+        }
     }
 
     async #sendmail(serie: Serie) {

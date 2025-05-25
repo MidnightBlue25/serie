@@ -24,6 +24,21 @@ import { HttpException, HttpStatus } from '@nestjs/common';
  */
 
 /**
+ * Exception-Klasse für eine bereits existierende Seriennummer.
+ */
+export class SeriennummerExistsException extends HttpException {
+    readonly seriennummer: string | undefined;
+
+    constructor(seriennummer: string | undefined) {
+        super(
+            `Die Seriennummer ${seriennummer} existiert bereits.`,
+            HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+        this.seriennummer = seriennummer;
+    }
+}
+
+/**
  * Exception-Klasse für eine ungültige Versionsnummer beim Ändern.
  */
 export class VersionInvalidException extends HttpException {
