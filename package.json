@@ -14,7 +14,7 @@
   "scripts": {
     "prebuild": "npm run clean",
     "build": "nest build",
-    "start": "node dist/src/main.js",
+    "start": "node dist/main.js",
     "pre:dev": "npm run copy-resources",
     "dev": "nest start --watch",
     "debug": "npm run dev -- --debug",
