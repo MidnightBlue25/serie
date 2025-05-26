@@ -15,12 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# Aufruf:   docker build --tag juergenzimmermann/serie:2025.4.1-bookworm .
+# Aufruf:   docker build --tag daen1012/serie:2025.5.26-bookworm .
 #               ggf. --progress=plain
 #               ggf. --no-cache
 #           Get-Content Dockerfile | docker run --rm --interactive hadolint/hadolint:2.12.1-beta-debian
 #               Linux:   cat Dockerfile | docker run --rm --interactive hadolint/hadolint:2.12.1-beta-debian
-#           docker save juergenzimmermann/serie:2025.4.1-bookworm > serie.tar
+#           docker save daen1012/serie:2025.5.26-bookworm > serie.tar
 #           docker network ls
 
 # https://docs.docker.com/engine/reference/builder/#syntax
@@ -57,7 +57,7 @@ apt-get upgrade --yes --no-show-upgraded
 # https://packages.debian.org/bookworm/python3.11-dev
 # Python 3.12: Uebersetzung des Python-Quellcodes erforderlich
 # https://itnixpro.com/how-to-install-python-3-12-on-debian-12debian-11
-apt-get install --no-install-recommends --yes python3.11-minimal=3.11.2-6+deb12u5 python3.11-dev=3.11.2-6+deb12u5 build-essential=12.9
+apt-get install --no-install-recommends --yes python3.11-minimal python3.11-dev build-essential
 ln -s /usr/bin/python3.11 /usr/bin/python3
 ln -s /usr/bin/python3.11 /usr/bin/python
 
@@ -96,7 +96,7 @@ apt-get update
 apt-get upgrade --yes
 # https://packages.debian.org/bookworm/python3.11-minimal
 # https://packages.debian.org/bookworm/python3.11-dev
-apt-get install --no-install-recommends --yes python3.11-minimal=3.11.2-6+deb12u5 python3.11-dev=3.11.2-6+deb12u5 build-essential=12.9
+apt-get install --no-install-recommends --yes python3.11-minimal python3.11-dev build-essential
 ln -s /usr/bin/python3.11 /usr/bin/python3
 ln -s /usr/bin/python3.11 /usr/bin/python
 npm i -g --no-audit --no-fund npm
