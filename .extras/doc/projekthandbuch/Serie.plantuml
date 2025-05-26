@@ -36,19 +36,19 @@ package typeorm {
   hide UpdateDateColumn circle
 }
 
-package buch.entity {
-  class "type BuchArt = 'KINDLE' | 'DRUCKAUSGABE'" as BuchArt
-  hide BuchArt circle
+package serie.entity {
+  class "type SerieArt = 'STREAM' | 'TV' | 'DVD' " as SerieArt
+  hide SerieArt circle
 
-  class Buch <<entity>> <<@Entity>> {
+  class Serie <<entity>> <<@Entity>> {
     @Column() @PrimaryColumn() readonly id: number
     @Column() readonly version: number
-    @Column() readonly isbn: string
+    @Column() readonly seriennummer: string
     @Column() readonly rating: number
-    @Column() readonly art: BuchArt
+    @Column() readonly art: SerieArt
     @Column() readonly preis: number
     @Column() readonly rabatt: number
-    @Column() readonly lieferbar: boolean
+    @Column() readonly trailer: boolean
     @Column() readonly datum: Date
     @Column() readonly homepage?: string
     @Column() readonly schlagwoerter?: string
@@ -62,21 +62,21 @@ package buch.entity {
     @Column() readonly untertitel?: string
   }
 
-  class Abbildung <<entity>> <<@Entity>> {
+  class Cover <<entity>> <<@Entity>> {
     @Column() @PrimaryColumn() readonly id: number
     @Column() readonly beschriftung: string
     @Column() readonly contentType?: string
   }
 
-  Buch *--> "1" Titel : @OneToOne() \ntitel
-  Buch *--> "*" Abbildung : @OneToMany() \nabbildungen
+  Serie *--> "1" Titel : @OneToOne() \ntitel
+  Serie *--> "*" Cover : @OneToMany() \ncovers
 
-  Buch .right.> Entity
-  Buch .right.> BuchArt
+  Serie .right.> Entity
+  Serie .right.> SerieArt
 }
 
 hide empty members
 
-footer (c) Jürgen Zimmermann
+footer (c) Engin Dagdas
 
 @enduml

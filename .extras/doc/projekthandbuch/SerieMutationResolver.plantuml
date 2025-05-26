@@ -43,46 +43,46 @@ package nest-keycloak-connect {
   hide Roles circle
 }
 
-package buch #DDDDDD {
+package serie #DDDDDD {
   package entity #FFFFFF {
-    class Buch <<entity>>
+    class Serie <<entity>>
   }
 
   package service #FFFFFF {
-    class BuchWriteService << control >>
+    class SerieWriteService << control >>
   }
 
-  class "type BuchDTO = Omit<Buch, 'abbildungen' | 'aktualisiert' | 'erzeugt'" as BuchDTO
-  hide BuchDTO circle
+  class "type SerieDTO = Omit<Serie, 'covers' | 'aktualisiert' | 'erzeugt'" as SerieDTO
+  hide SerieDTO circle
 
     interface IdInput {
         id: number
     }
 
-  class BuchMutationResolver << control >> << @Resolver() >> << @UseGuards() >> << @UseInterceptors() >> {
-    + @Mutation() @Roles() async create(@Args() buchDTO: BuchDTO): Promise<number>
-    + @Mutation() @Roles() async update(@Args() buchDTO: BuchDTO): Promise<number>
+  class SerieMutationResolver << control >> << @Resolver() >> << @UseGuards() >> << @UseInterceptors() >> {
+    + @Mutation() @Roles() async create(@Args() serieDTO: SerieDTO): Promise<number>
+    + @Mutation() @Roles() async update(@Args() serieDTO: SerieDTO): Promise<number>
     + @Mutation() @Roles() async delete(@Args() id: IdInput): Promise<boolean>
   }
 
-  BuchMutationResolver o-down-> "1" BuchWriteService : service
+  SerieMutationResolver o-down-> "1" SerieWriteService : service
 
-  BuchMutationResolver ..> Buch
-  BuchMutationResolver ..> BuchDTO
-  BuchMutationResolver ..> IdInput
-  BuchDTO .up.> Buch
-  BuchMutationResolver ..> Promise
-  BuchMutationResolver ..> Resolver
+  SerieMutationResolver ..> Serie
+  SerieMutationResolver ..> SerieDTO
+  SerieMutationResolver ..> IdInput
+  SerieDTO .up.> Serie
+  SerieMutationResolver ..> Promise
+  SerieMutationResolver ..> Resolver
 
-  BuchMutationResolver .up.> AuthGuard
-  BuchMutationResolver .up.> Roles
+  SerieMutationResolver .up.> AuthGuard
+  SerieMutationResolver .up.> Roles
 
-  BuchDTO .[hidden].> Promise
-  BuchDTO .[hidden].> Resolver
+  SerieDTO .[hidden].> Promise
+  SerieDTO .[hidden].> Resolver
 }
 
 hide empty members
 
-footer (c) Juergen Zimmermann
+footer (c) Engin Dagdas
 
 @enduml

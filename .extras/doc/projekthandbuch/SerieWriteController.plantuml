@@ -78,47 +78,47 @@ package express {
   Response .right[hidden].> Controller
 }
 
-package buch {
+package serie {
   package entity #FFFFFF {
-    class Buch <<entity>>
+    class Serie <<entity>>
 
-    Buch .[hidden].> Promise
-    Buch .[hidden].> Request
+    Serie .[hidden].> Promise
+    Serie .[hidden].> Request
   }
 
   package service {
-    class BuchWriteService << control >>
-    class BuchReadService << control >>
+    class SerieWriteService << control >>
+    class SerieReadService << control >>
   }
 
   package rest #DDDDDD {
-    class BuchWriteController << control >> << @Controller() >> << @UseGuards() >> << @UseInterceptors() >> {
-      + @Post() @Roles() async post(@Body() buch: Buch, @Req() req: Request,  @Res() res: Response): Promise<Response>
-      + @Put() @Roles() async put(@Body() buch: Buch, @Param() id: number, @Headers() version: string, @Res() res: Response): Promise<Response>
+    class SerieWriteController << control >> << @Controller() >> << @UseGuards() >> << @UseInterceptors() >> {
+      + @Post() @Roles() async post(@Body() serie: Serie, @Req() req: Request,  @Res() res: Response): Promise<Response>
+      + @Put() @Roles() async put(@Body() serie: Serie, @Param() id: number, @Headers() version: string, @Res() res: Response): Promise<Response>
       + @Delete() @Roles() async delete(@Param() id: number, @Res() res: Response): Promise<Response>
     }
 
-    BuchWriteController o--> "1" BuchWriteService : service
-    BuchWriteController o--> "1" BuchReadService : readService
-    BuchWriteController ..up> Buch
+    SerieWriteController o--> "1" SerieWriteService : service
+    SerieWriteController o--> "1" SerieReadService : readService
+    SerieWriteController ..up> Serie
 
-    BuchWriteController ..> Controller
+    SerieWriteController ..> Controller
 
-    BuchWriteController .up.> AuthGuard
-    BuchWriteController .up.> Roles
+    SerieWriteController .up.> AuthGuard
+    SerieWriteController .up.> Roles
 
-    BuchWriteController ..> Request
-    BuchWriteController ..> Response
-    BuchWriteController ..> Promise
+    SerieWriteController ..> Request
+    SerieWriteController ..> Response
+    SerieWriteController ..> Promise
 
-    Buch .up[hidden].> Roles
-    BuchWriteService .[hidden].> Request
-    BuchWriteService .[hidden].> Promise
+    Serie .up[hidden].> Roles
+    SerieWriteService .[hidden].> Request
+    SerieWriteService .[hidden].> Promise
   }
 }
 
 hide empty members
 
-footer (c) Juergen Zimmermann
+footer (c) Engin Dagdas
 
 @enduml

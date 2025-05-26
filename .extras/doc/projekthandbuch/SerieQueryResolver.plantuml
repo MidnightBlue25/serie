@@ -35,46 +35,46 @@ package @nestjs/graphql {
   Resolver .left[hidden].> Promise
 }
 
-package buch {
+package serie {
   package entity {
-    class Buch <<entity>>
+    class Serie <<entity>>
   }
 
   package service {
-    class BuchReadService << control >>
+    class SerieReadService << control >>
   }
 
   package graphql #DDDDDD {
-    class "type BuchDTO = Omit<Buch, 'abbildungen' | 'aktualisiert' | 'erzeugt'" as BuchDTO
-    hide BuchDTO circle
+    class "type SerieDTO = Omit<Serie, 'covers' | 'aktualisiert' | 'erzeugt'" as SerieDTO
+    hide SerieDTO circle
 
     interface IdInput {
         id: number
     }
 
-    class BuchQueryResolver << control >> << @Resolver() >> << @UseInterceptors() >> {
-      + @Query() async buch(@Args() id: IdInput): Promise<BuchDTO>
-      + @Query() async buecher(@Args() titel: string | undefined): Promise<BuchDTO[]>
+    class SerieQueryResolver << control >> << @Resolver() >> << @UseInterceptors() >> {
+      + @Query() async serie(@Args() id: IdInput): Promise<SerieDTO>
+      + @Query() async serien(@Args() titel: string | undefined): Promise<SerieDTO[]>
     }
 
-    BuchQueryResolver o-up-> "1" BuchReadService : service
-    BuchQueryResolver ..> BuchDTO
-    BuchQueryResolver ..> IdInput
-    BuchDTO ..> Buch
-    BuchQueryResolver ..> Resolver
+    SerieQueryResolver o-up-> "1" SerieReadService : service
+    SerieQueryResolver ..> SerieDTO
+    SerieQueryResolver ..> IdInput
+    SerieDTO ..> Serie
+    SerieQueryResolver ..> Resolver
 
-    BuchQueryResolver ..> Promise
+    SerieQueryResolver ..> Promise
 
-    BuchDTO .[hidden].> Buch
-    Buch .[hidden].> Promise
-    BuchReadService .[hidden].> Promise
-    Buch .[hidden].> Resolver
-    BuchReadService .[hidden].> Resolver
+    SerieDTO .[hidden].> Serie
+    Serie .[hidden].> Promise
+    SerieReadService .[hidden].> Promise
+    Serie .[hidden].> Resolver
+    SerieReadService .[hidden].> Resolver
   }
 }
 
 hide empty members
 
-footer (c) Juergen Zimmermann
+footer (c) Engin Dagdas
 
 @enduml

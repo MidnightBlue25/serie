@@ -21,17 +21,17 @@ actor Gast
 actor Admin
 actor Kunde
 
-rectangle buch {
-    Gast --> (Buch suchen)
-    Admin --> (Buch suchen)
-    Admin --> (Buch anlegen)
-    Admin --> (Buch ändern)
-    Admin --> (Buch löschen)
-    Kunde --> (Buch suchen)
-    Kunde --> (Buch anlegen)
-    Kunde --> (Buch ändern)
+rectangle serie {
+    Gast --> (Serie suchen)
+    Admin --> (Serie suchen)
+    Admin --> (Serie anlegen)
+    Admin --> (Serie ändern)
+    Admin --> (Serie löschen)
+    Kunde --> (Serie suchen)
+    Kunde --> (Serie anlegen)
+    Kunde --> (Serie ändern)
 }
 
-footer (c) Jürgen Zimmermann
+footer (c) Engin Dagdas
 
 @enduml

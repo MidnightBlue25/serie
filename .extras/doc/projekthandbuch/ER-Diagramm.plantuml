@@ -23,16 +23,16 @@ hide circle
 ' evtl. Prbleme mit Kraehenfuessen vermeiden
 skinparam linetype ortho
 
-entity "Buch" {
+entity "Serie" {
   * id: integer <<generated>>
   --
   * version: integer
-  * isbn: text
+  * seriennummer: text
   * rating: number
   * art: text
   * preis: number
   * rabatt: number
-  * lieferbar: boolean
+  * trailer: boolean
     datum: date
     homepage: text
   * **titel_id**: integer <<FK>>
@@ -48,17 +48,17 @@ entity "Titel" {
     untertitel: text
 }
 
-entity "Abbildung" {
+entity "Cover" {
   * id: integer <<generated>>
   --
   * beschriftung: text
     contentType: text
-  * **buch_id**: integer <<FK>>
+  * **serie_id**: integer <<FK>>
 }
 
-Buch ||..|| Titel
-Buch ||..o{ Abbildung
+Serie ||..|| Titel
+Serie ||..o{ Cover
 
-footer (c) Jürgen Zimmermann
+footer (c) Engin Dagdas
 
 @enduml

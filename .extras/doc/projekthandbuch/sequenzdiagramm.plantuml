@@ -19,14 +19,14 @@
 
 actor Gast
 
-boundary BuchGetController
-control BuchReadService
-database buch
+boundary SerieGetController
+control SerieReadService
+database serie
 
-Gast -> BuchGetController : GET / getById()
-BuchGetController -> BuchReadService: findById()
-BuchReadService -> buch: [TypeORM]
+Gast -> SerieGetController : GET / getById()
+SerieGetController -> SerieReadService: findById()
+SerieReadService -> serie: [TypeORM]
 
-footer (c) Jürgen Zimmermann
+footer (c) Engin Dagdas
 
 @enduml

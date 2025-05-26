@@ -1,0 +1,88 @@
+' Copyright (C) 2019 - present Juergen Zimmermann, Hochschule Karlsruhe
+'
+' This program is free software: you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation, either version 3 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+' Preview durch <Alt>d
+
+@startuml Anwendungskern
+
+interface Promise<T>
+
+package @nestjs/common {
+  class "@Injectable" as Injectable
+  hide Injectable circle
+}
+
+package typeorm {
+  class Repository<T>
+}
+
+package @nestjs/typeorm {
+  class "@InjectRepository" as InjectRepository
+  hide InjectRepository circle
+}
+
+package mail {
+  class MailService
+}
+
+package serie {
+  package entity {
+    class Serie
+  }
+
+  package service #DDDDDD {
+    class SerieInvalid
+    class TitelExists
+    class SeriennummerExists
+    class VersionInvalid
+    class VersionOutdated
+
+    class SerieWriteService << control >> <<@Injectable()>> {
+      + async create(serie: Serie): Promise<string|SerieInvalid|TitelExists|SeriennummerExists>
+      + async update(id: number, serie: Serie, version: string): Promise<number|SerieInvalid|TitelExists|SeriennummerExists|VersionInvalid|VersionOutdated>
+      + async delete(id: number): Promise<boolean>
+    }
+
+    SerieWriteService o--> "1" SerieValidationService: validationService
+    SerieWriteService o--> "1" SerieReadService: readService
+    SerieWriteService o--> "1" Repository: @InjectRepository repo
+    SerieWriteService o--> "1" MailService: mailService
+
+    SerieWriteService .up.> Injectable
+    SerieWriteService .up.> InjectRepository
+
+    SerieWriteService .up.> Promise
+    SerieWriteService ..> Serie
+    SerieWriteService .up.> SerieInvalid
+    SerieWriteService .up.> TitelExists
+    SerieWriteService .up.> SeriennummerExists
+    SerieWriteService .up.> VersionInvalid
+    SerieWriteService .up.> VersionOutdated
+
+    SerieInvalid .up[hidden].> Serie
+    Serie .up[hidden].> Promise
+    Serie .up[hidden].> Injectable
+    Serie .up[hidden].> InjectRepository
+    TitelExists .up[hidden].> Serie
+    SerieValidationService .[hidden].> Repository
+    SerieValidationService .[hidden].> MailService
+  }
+}
+
+hide empty members
+
+footer (c) Engin Dagdas
+
+@enduml

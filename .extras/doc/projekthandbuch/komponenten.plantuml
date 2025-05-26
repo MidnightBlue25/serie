@@ -25,12 +25,12 @@ actor GraphQLClient
 node "Nest" {
   [RequestLoggerMiddleware]
 
-  [BuchController]
-  [BuchResolver]
+  [SerieController]
+  [SerieResolver]
 
-  [BuchService]
+  [SerieService]
 
-  [Repository<Buch>]
+  [Repository<Serie>]
 
   [MailService]
 }
@@ -48,10 +48,10 @@ cloud {
     [nodemailer]
 }
 
-database "DB buch" {
-    [Tabelle buch]
+database "DB serie" {
+    [Tabelle serie]
     [Tabelle titel]
-    [Tabelle abbildung]
+    [Tabelle cover]
 }
 
 node {
@@ -65,27 +65,27 @@ node {
 RESTClient ~~> [RequestLoggerMiddleware]
 GraphQLClient ~~> [RequestLoggerMiddleware]
 
-[RequestLoggerMiddleware] ~~> [BuchController]
-[RequestLoggerMiddleware] ~~> [BuchResolver]
+[RequestLoggerMiddleware] ~~> [SerieController]
+[RequestLoggerMiddleware] ~~> [SerieResolver]
 
-[BuchController] ..> [BuchService]
-[BuchResolver] ..> [BuchService]
-[BuchService] ..> [Repository<Buch>]
+[SerieController] ..> [SerieService]
+[SerieResolver] ..> [SerieService]
+[SerieService] ..> [Repository<Serie>]
 
-[Repository<Buch>] ~~> [TypeORM]
-[TypeORM] ~~> [Tabelle buch]
+[Repository<Serie>] ~~> [TypeORM]
+[TypeORM] ~~> [Tabelle serie]
 [TypeORM] ~~> [Tabelle titel]
-[TypeORM] ~~> [Tabelle abbildung]
+[TypeORM] ~~> [Tabelle cover]
 
-[BuchController] ..> [nest-keycloak-connect]
+[SerieController] ..> [nest-keycloak-connect]
 [nest-keycloak-connect] ~~> [Keycloak]
 
-[BuchService] ..> [MailService]
+[SerieService] ..> [MailService]
 [MailService] ~~> [nodemailer]
 [nodemailer] ~~> [Mailserver]
 
 [MailService] ~[hidden]~> [nest-keycloak-connect]
 
-footer (c) Jürgen Zimmermann
+footer (c) Engin Dagdas
 
 @enduml
