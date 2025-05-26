@@ -16,23 +16,26 @@
 import { beforeAll, describe, expect, inject, test } from 'vitest';
 import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
+import { Decimal } from 'decimal.js';
 import { type SerieDTO } from '../../src/serie/controller/serieDTO.entity.js';
 import { SerieReadService } from '../../src/serie/service/serie-read.service.js';
 import { baseURL, httpsAgent } from '../constants.mjs';
+import { type ErrorResponse } from './error-response.mjs';
 
 const token = inject('tokenRest');
 
 // -----------------------------------------------------------------------------
 // T e s t d a t e n
 // -----------------------------------------------------------------------------
-const neueSerie: Omit<SerieDTO, 'preis' | 'episode'> & {
+const neueSerie: Omit<SerieDTO, 'preis' | 'rabatt'> & {
     preis: number;
-    episode: number;
+    rabatt: number;
 } = {
+    seriennummer: 'SER-787831',
     rating: 1,
     art: 'TV',
     preis: 99.99,
-    episode: 2,
+    rabatt: 0.0123,
     trailer: true,
     datum: '2022-02-28',
     homepage: 'https://post.rest',
@@ -49,10 +52,11 @@ const neueSerie: Omit<SerieDTO, 'preis' | 'episode'> & {
     ],
 };
 const neueSerieInvalid: Record<string, unknown> = {
-    rating: 4,
+    seriennummer: 'falsche-Seriennummer',
+    rating: -4,
     art: 'UNSICHTBAR',
-    preis: 1,
-    episode: 2,
+    preis: -1,
+    rabatt: 2,
     trailer: true,
     datum: '12345-123-123',
     homepage: 'anyHomepage',
@@ -60,6 +64,22 @@ const neueSerieInvalid: Record<string, unknown> = {
         titel: '?!',
         untertitel: 'Untertitelinvalid',
     },
+};
+const neueSerieSeriennummerExistiert: SerieDTO = {
+    seriennummer: 'SER-123456',
+    rating: 1,
+    art: 'TV',
+    preis: new Decimal(99.99),
+    rabatt: new Decimal(0.09),
+    trailer: true,
+    datum: '2022-02-28',
+    homepage: 'https://post.isbn/',
+    schlagwoerter: ['JAVASCRIPT', 'TYPESCRIPT'],
+    titel: {
+        titel: 'Titelpostseriennummer',
+        untertitel: 'Untertitelpostseriennummer',
+    },
+    covers: [],
 };
 
 // -----------------------------------------------------------------------------
@@ -119,10 +139,11 @@ describe('POST /rest', () => {
         // given
         headers.Authorization = `Bearer ${token}`;
         const expectedMsg = [
+            expect.stringMatching(/^seriennummer /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^art /u),
             expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^episode /u),
+            expect.stringMatching(/^rabatt /u),
             expect.stringMatching(/^datum /u),
             expect.stringMatching(/^homepage /u),
             expect.stringMatching(/^titel.titel /u),
@@ -145,6 +166,26 @@ describe('POST /rest', () => {
         expect(messages).toBeDefined();
         expect(messages).toHaveLength(expectedMsg.length);
         expect(messages).toStrictEqual(expect.arrayContaining(expectedMsg));
+    });
+
+    test.concurrent('Neue Serie, aber SER-Nr. existiert bereits', async () => {
+        // given
+        headers.Authorization = `Bearer ${token}`;
+
+        // when
+        const response: AxiosResponse<ErrorResponse> = await client.post(
+            '',
+            neueSerieSeriennummerExistiert,
+            { headers },
+        );
+
+        // then
+        const { data } = response;
+
+        const { message, statusCode } = data;
+
+        expect(message).toStrictEqual(expect.stringContaining('Seriennummer'));
+        expect(statusCode).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
     });
 
     test.concurrent('Neue Serie, aber ohne Token', async () => {

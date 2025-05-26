@@ -26,14 +26,15 @@ const token = inject('tokenRest');
 // -----------------------------------------------------------------------------
 // T e s t d a t e n
 // -----------------------------------------------------------------------------
-const geaenderteSerie: Omit<SerieDtoOhneRef, 'preis' | 'episode'> & {
+const geaenderteSerie: Omit<SerieDtoOhneRef, 'preis' | 'rabatt'> & {
     preis: number;
-    episode: number;
+    rabatt: number;
 } = {
+    seriennummer: 'SER-444555',
     rating: 5,
     art: 'STREAM',
     preis: 3333,
-    episode: 2,
+    rabatt: 0.033,
     trailer: true,
     datum: '2022-03-03',
     homepage: 'https://geaendert.put.rest',
@@ -43,15 +44,16 @@ const idVorhanden = '30';
 
 const geaenderteSerieIdNichtVorhanden: Omit<
     SerieDtoOhneRef,
-    'preis' | 'episode'
+    'preis' | 'rabatt'
 > & {
     preis: number;
-    episode: number;
+    rabatt: number;
 } = {
+    seriennummer: 'SER-444512',
     rating: 4,
     art: 'TV',
     preis: 44.4,
-    episode: 5,
+    rabatt: 0.044,
     trailer: true,
     datum: '2022-02-04',
     homepage: 'https://acme.de',
@@ -60,20 +62,22 @@ const geaenderteSerieIdNichtVorhanden: Omit<
 const idNichtVorhanden = '999999';
 
 const geaenderteSerieInvalid: Record<string, unknown> = {
-    rating: 1,
+    seriennummer: 'falsche-Seriennummer',
+    rating: -1,
     art: 'UNSICHTBAR',
-    preis: 1,
-    episode: 2,
+    preis: -1,
+    rabatt: 2,
     trailer: true,
     datum: '12345-123-123',
     homepage: 'anyHomepage',
 };
 
 const veralteSerie: SerieDtoOhneRef = {
+    seriennummer: 'SER-444512',
     rating: 1,
     art: 'TV',
     preis: new Decimal(44.4),
-    episode: 1,
+    rabatt: new Decimal(0.04),
     trailer: true,
     datum: '2022-02-04',
     homepage: 'https://acme.de',
@@ -141,10 +145,11 @@ describe('PUT /rest/:id', () => {
         headers.Authorization = `Bearer ${token}`;
         headers['If-Match'] = '"0"';
         const expectedMsg = [
+            expect.stringMatching(/^seriennummer /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^art /u),
             expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^episode /u),
+            expect.stringMatching(/^rabatt /u),
             expect.stringMatching(/^datum /u),
             expect.stringMatching(/^homepage /u),
         ];

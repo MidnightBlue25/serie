@@ -53,10 +53,11 @@ describe('GraphQL Mutations', () => {
                 mutation {
                     create(
                         input: {
+                            seriennummer: "SER-898971",
                             rating: 1,
                             art: STREAM,
                             preis: 99.99,
-                            episode: 1,
+                            rabatt: 0.0123,
                             trailer: true,
                             datum: "2022-02-28",
                             homepage: "https://create.mutation",
@@ -102,10 +103,11 @@ describe('GraphQL Mutations', () => {
                 mutation {
                     create(
                         input: {
-                            rating: 2,
+                            seriennummer: "falsche-Seriennummer",
+                            rating: -2,
                             art: STREAM,
-                            preis: 3,
-                            episode: 2,
+                            preis: -3,
+                            rabatt: 2,
                             trailer: false,
                             datum: "12345-123-123",
                             homepage: "anyHomepage",
@@ -120,9 +122,10 @@ describe('GraphQL Mutations', () => {
             `,
         };
         const expectedMsg = [
+            expect.stringMatching(/^seriennummer /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^episode /u),
+            expect.stringMatching(/^rabatt /u),
             expect.stringMatching(/^datum /u),
             expect.stringMatching(/^homepage /u),
             expect.stringMatching(/^titel.titel /u),
@@ -164,13 +167,14 @@ describe('GraphQL Mutations', () => {
                         input: {
                             id: "40",
                             version: 0,
+                            seriennummer: "SER-521456",
                             rating: 5,
-                            art: TV,
+                            art: STREAM,
                             preis: 444.44,
-                            episode: 2,
+                            rabatt: 0.099,
                             trailer: false,
                             datum: "2021-04-04",
-                            homepage: "https://update.mutation"
+                            homepage: "https://update.mutation",
                             schlagwoerter: ["JAVA", "PYTHON"],
                         }
                     ) {
@@ -207,10 +211,11 @@ describe('GraphQL Mutations', () => {
                         input: {
                             id: "${id}",
                             version: 0,
-                            rating: 3,
+                            seriennummer: "falsche-Seriennummer",
+                            rating: -3,
                             art: TV,
-                            preis: 2,
-                            episode: 3,
+                            preis: -2,
+                            rabatt: 2,
                             trailer: false,
                             datum: "12345-123-123",
                             homepage: "anyHomepage",
@@ -223,9 +228,10 @@ describe('GraphQL Mutations', () => {
             `,
         };
         const expectedMsg = [
+            expect.stringMatching(/^seriennummer /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^episode /u),
+            expect.stringMatching(/^rabatt /u),
             expect.stringMatching(/^datum /u),
             expect.stringMatching(/^homepage /u),
         ];
@@ -264,10 +270,11 @@ describe('GraphQL Mutations', () => {
                         input: {
                             id: "${id}",
                             version: 0,
+                            seriennummer: "SER-994477",
                             rating: 5,
                             art: DVD,
                             preis: 99.99,
-                            episode: 4,
+                            rabatt: 0.099,
                             trailer: false,
                             datum: "2021-01-02",
                             homepage: "https://acme.com",

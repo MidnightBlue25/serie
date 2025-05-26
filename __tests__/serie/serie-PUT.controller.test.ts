@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import { afterAll, beforeAll, describe, expect, test } from '@jest/globals';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import { HttpStatus } from '@nestjs/common';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 import { Decimal } from 'decimal.js';
@@ -32,14 +32,15 @@ import { type ErrorResponse } from './error-response.js';
 // -----------------------------------------------------------------------------
 // T e s t d a t e n
 // -----------------------------------------------------------------------------
-const geaenderteSerie: Omit<SerieDtoOhneRef, 'preis' | 'episode'> & {
+const geaenderteSerie: Omit<SerieDtoOhneRef, 'preis' | 'rabatt'> & {
     preis: number;
-    episode: number;
+    rabatt: number;
 } = {
+    seriennummer: 'SER-654321',
     rating: 5,
     art: 'DVD',
     preis: 3333,
-    episode: 4,
+    rabatt: 0.033,
     trailer: true,
     datum: '2022-03-03',
     homepage: 'https://geaendert.put.rest',
@@ -49,15 +50,16 @@ const idVorhanden = '30';
 
 const geaenderteSerieIdNichtVorhanden: Omit<
     SerieDtoOhneRef,
-    'preis' | 'episode'
+    'preis' | 'rabatt'
 > & {
     preis: number;
-    episode: number;
+    rabatt: number;
 } = {
+    seriennummer: '564321',
     rating: 4,
     art: 'STREAM',
     preis: 44.4,
-    episode: 5,
+    rabatt: 0.044,
     trailer: true,
     datum: '2022-02-04',
     homepage: 'https://acme.de',
@@ -66,21 +68,23 @@ const geaenderteSerieIdNichtVorhanden: Omit<
 const idNichtVorhanden = '999999';
 
 const geaenderteSerieInvalid: Record<string, unknown> = {
+    seriennummer: 'falsche-seriennummer',
     rating: 1,
-    art: 'UNSICHTBAR',
-    preis: -1,
-    episode: 2,
+    art: 'TV',
+    preis: 1,
+    rabatt: new Decimal(0.05),
     trailer: true,
-    datum: '12345-123-123',
-    titel: '?!',
-    homepage: 'anyHomepage',
+    datum: '2025-02-03',
+    titel: 'Alpha',
+    homepage: 'https://acme.de',
 };
 
 const veralteSerie: SerieDtoOhneRef = {
+    seriennummer: 'SER-667711',
     rating: 1,
     art: 'TV',
     preis: new Decimal(44.4),
-    episode: 2,
+    rabatt: new Decimal(0.04),
     trailer: true,
     datum: '2022-02-04',
     homepage: 'https://acme.de',
@@ -158,10 +162,11 @@ describe('PUT /rest/:id', () => {
         headers.Authorization = `Bearer ${token}`;
         headers['If-Match'] = '"0"';
         const expectedMsg = [
+            expect.stringMatching(/^seriennummer /u),
             expect.stringMatching(/^rating /u),
             expect.stringMatching(/^art /u),
             expect.stringMatching(/^preis /u),
-            expect.stringMatching(/^episode /u),
+            expect.stringMatching(/^rabatt /u),
             expect.stringMatching(/^datum /u),
             expect.stringMatching(/^homepage /u),
         ];

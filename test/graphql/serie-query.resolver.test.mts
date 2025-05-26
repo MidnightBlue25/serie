@@ -27,9 +27,9 @@ import { baseURL, httpsAgent } from '../constants.mjs';
 
 type SerieDTO = Omit<
     Serie,
-    'covers' | 'aktualisiert' | 'erzeugt' | 'episode'
+    'covers' | 'aktualisiert' | 'erzeugt' | 'rabatt'
 > & {
-    episode: string;
+    rabatt: string;
 };
 
 // -----------------------------------------------------------------------------
@@ -40,6 +40,8 @@ const idVorhanden = '1';
 const titelVorhanden = 'Alpha';
 const teilTitelVorhanden = 'a';
 const teilTitelNichtVorhanden = 'abc';
+
+const seriennummerVorhanden = 'SER-123456';
 
 const ratingMin = 3;
 const ratingNichtVorhanden = 99;
@@ -71,6 +73,7 @@ describe('GraphQL Queries', () => {
                 {
                     serie(id: "${idVorhanden}") {
                         version
+                        seriennummer
                         rating
                         art
                         preis
@@ -81,7 +84,7 @@ describe('GraphQL Queries', () => {
                         titel {
                             titel
                         }
-                        episode
+                        rabatt(short: true)
                     }
                 }
             `,
@@ -258,6 +261,23 @@ describe('GraphQL Queries', () => {
         expect(extensions!.code).toBe('BAD_USER_INPUT');
     });
 
+    test.concurrent('Serie zu vorhandener Seriennummer', async () => {
+        // given
+        const body: GraphQLRequest = {
+            query: `
+                {
+                    serien(suchkriterien: {
+                        seriennummer: "${seriennummerVorhanden}"
+                    }) {
+                        seriennummer
+                        titel {
+                            titel
+                        }
+                    }
+                }
+            `,
+        };
+
         // when
         const { status, headers, data }: AxiosResponse<GraphQLResponseBody> =
             await client.post(graphqlPath, body);
@@ -274,8 +294,9 @@ describe('GraphQL Queries', () => {
         expect(serien).toHaveLength(1);
 
         const [serie] = serien;
-        const { titel } = serie!;
+        const { seriennummer, titel } = serie!;
 
+        expect(seriennummer).toBe(seriennummerVorhanden);
         expect(titel?.titel).toBeDefined();
     });
 
